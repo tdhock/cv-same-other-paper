@@ -73,18 +73,6 @@ for(data.name in c("vowel","waveform","zip")){
   data.list[[data.name]] <- rbindlist(set.list)
 }
 
-nrow.ncol.mat <- t(sapply(data.list, dim))
-colnames(nrow.ncol.mat) <- c("nrow","ncol")
-y.set.tabs <- sapply(data.list, function(DT)DT[, table(y, predefined.set)])
-set.count.mat <- t(sapply(data.list, function(DT)table(DT[,1])))
-colnames(set.count.mat) <- paste0("nrow.", colnames(set.count.mat))
-meta.dt <- data.table(
-  data.name=rownames(nrow.ncol.mat),
-  set.count.mat,
-  features=nrow.ncol.mat[,"ncol"]-2,
-  classes=sapply(y.set.tabs, nrow))
-fwrite(meta.dt, "data-meta.csv")
-
 for(data.name in names(data.list))fwrite(
   data.list[[data.name]],
   paste0(file.path("data", data.name), ".csv")

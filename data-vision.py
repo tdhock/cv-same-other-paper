@@ -104,4 +104,4 @@ for data_name in dir(torchvision.datasets):
                         pandas.DataFrame(input_tensor.flatten(start_dim=1))
                     ], axis=1))
         data_df = pandas.concat(data_df_list)
-        data_df.to_csv(out_csv)
+        data_df.to_csv(out_csv,index=False)
