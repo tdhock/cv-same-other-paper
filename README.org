@@ -1,11 +1,12 @@
 ** Motivation
 
 - is the iid assumption verified in real data?
-- train/test data sets.
-  - mlbench
-  - mlr3
-  - caret/tidymodels?
-  - [[https://hastie.su.domains/ElemStatLearn/data.html][ESL2 data]]
+- train/test data sets
+  - mlbench? no explicit train/test column, see [[file:mlbench.R]]
+  - mlr3data https://mlr3data.mlr-org.com/ TODO
+  - caret https://topepo.github.io/caret/data-sets.html segmentationData has Case column with values Train and Test. TODO
+  - tidymodels https://modeldata.tidymodels.org/reference/index.html TODO
+  - [[https://hastie.su.domains/ElemStatLearn/data.html][ESL2 data]] processed in [[file:data.R]]
   - list of image classification data sets: https://pytorch.org/vision/stable/datasets.html
   - pages like
     https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST
@@ -49,3 +50,13 @@ split arg can be train/test/extra https://pytorch.org/vision/stable/generated/to
 Some have both train and split https://pytorch.org/vision/stable/generated/torchvision.datasets.EMNIST.html#torchvision.datasets.EMNIST
 
 classes instead of split https://pytorch.org/vision/stable/generated/torchvision.datasets.LSUN.html#torchvision.datasets.LSUN
+
+exceptions / not parsed correctly:
+
+#+begin_src python
+{'STL10': ({'unlabeled', 'test', 'train+unlabeled', 'train'}, " One of {'train', 'test', 'unlabeled', 'train+unlabeled'}.\n            Accordingly, dataset is selected.\n")}
+{'Cityscapes': (['fine', 'train', 'test', 'val', 'train', 'train_extra', 'val'], ' The image split to use, ``train``, ``test`` or ``val`` if mode="fine"\n            otherwise ``train``, ``train_extra`` or ``val``\n')}
+{'EMNIST': (['byclass', 'bymerge', 'balanced', 'letters', 'digits', 'mnist'], ' The dataset has 6 different splits: ``byclass``, ``bymerge``,\n            ``balanced``, ``letters``, ``digits`` and ``mnist``. This argument specifies\n            which one to use.\n')}
+{'LFWPairs': (['train', 'test', '10fold', '10fold'], ' The image split to use. Can be one of ``train``, ``test``,\n            ``10fold``. Defaults to ``10fold``.\n')}
+{'MovingMNIST': (['train', 'test', 'None', 'split=None'], ' The dataset split, supports ``None`` (default), ``"train"`` and ``"test"``.\n            If ``split=None``, the full data is returned.\n')}
+#+end_src
