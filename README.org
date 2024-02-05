@@ -1,0 +1,51 @@
+** Motivation
+
+- is the iid assumption verified in real data?
+- train/test data sets.
+  - mlbench
+  - mlr3
+  - caret/tidymodels?
+  - [[https://hastie.su.domains/ElemStatLearn/data.html][ESL2 data]]
+  - list of image classification data sets: https://pytorch.org/vision/stable/datasets.html
+  - pages like
+    https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST
+    often have a split arg.
+  - https://github.com/pytorch/vision/tree/main/torchvision/datasets is source code.
+
+Below we see about 10 torchvision data sets with train arg.
+
+#+begin_src python
+>>> torch.__version__
+'1.13.0+cpu'
+>>> import torchvision.datasets
+>>> torchvision.__version__
+'0.14.0+cpu'
+>>> for data_name in dir(torchvision.datasets):
+...     data_class = getattr(torchvision.datasets, data_name)
+...     ann_dict = getattr(data_class.__init__, "__annotations__", {})
+...     if "train" in ann_dict:
+...         print(data_name)
+CIFAR10
+CIFAR100
+FashionMNIST
+HMDB51
+KMNIST
+Kitti
+MNIST
+PhotoTour
+QMNIST
+UCF101
+USPS
+#+end_src
+
+newer versions show the same data sets.
+
+Why doesn't Caltech101/256 show up above? no split/train arg.
+
+Why doesn't CELEBA show up? it does have split arg.
+
+split arg can be train/test/extra https://pytorch.org/vision/stable/generated/torchvision.datasets.SVHN.html#torchvision.datasets.SVHN
+
+Some have both train and split https://pytorch.org/vision/stable/generated/torchvision.datasets.EMNIST.html#torchvision.datasets.EMNIST
+
+classes instead of split https://pytorch.org/vision/stable/generated/torchvision.datasets.LSUN.html#torchvision.datasets.LSUN
