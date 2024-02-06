@@ -70,7 +70,8 @@ for(data.name in c("vowel","waveform","zip")){
     set.list[[predefined.set]] <- data.table(
       predefined.set, one.set.dt)
   }
-  data.list[[data.name]] <- rbindlist(set.list)
+  out.name <- if(data.name=="zip")"zipUSPS" else data.name
+  data.list[[out.name]] <- rbindlist(set.list)
 }
 
 for(data.name in names(data.list))fwrite(

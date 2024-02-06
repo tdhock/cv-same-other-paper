@@ -1,3 +1,4 @@
+import os
 import torch
 import re
 import pandas
@@ -5,12 +6,10 @@ torch.__version__
 import torchvision.datasets
 torchvision.__version__
 from torchvision.transforms import ToTensor
-inside="""[^(),`'" ]*?"""
-split_val_patterns=[
-    '"(?P<split_val>%s)"'%inside,
-    "'(?P<split_val>%s)'"%inside,
-    "``(?P<split_val>%s)``"%inside,
-]
+inside="""(?P<split_val>[^(),`'" ]*?)"""
+split_val_patterns=[q+inside+q for q in ("'","``",'"')]
+for p in split_val_patterns:
+    print(p)
 not_again='(?! +[^ ]+ [(])'
 arg_pattern = ''.join([
     ' +',
@@ -20,7 +19,6 @@ arg_pattern = ''.join([
     '[)]:',
     '(?P<doc>.*\n(?:%s.*\n)*)'%not_again
     ])
-import os
 def get_arg_dict(doc_string):
     doc_dict = {}
     if doc_string is None:
@@ -41,21 +39,82 @@ split_arg_dict = {
     'LFWPairs': ('train', 'test'),
     'MovingMNIST': ('train', 'test')
 }
-for data_name in dir(torchvision.datasets):
+class_data_names = [
+    "Caltech101",
+    "Caltech256",
+    "CelebA",
+    "CIFAR10",
+    "CIFAR100",
+    "Country211",
+    "DTD",
+    "EMNIST",
+    "EuroSAT",
+    "FashionMNIST",
+    "FER2013",
+    "FGVCAircraft",
+    "Flickr8k",
+    "Flickr30k",
+    "Flowers102",
+    "Food101",
+    "GTSRB",
+    "INaturalist",
+    "ImageNet",
+    "Imagenette",
+    "KMNIST",
+    "LFWPeople",
+    "LSUN",
+    "MNIST",
+    "Omniglot",
+    "OxfordIIITPet",
+    "Places365",
+    "PCAM",
+    "QMNIST",
+    "RenderedSST2",
+    "SEMEION",
+    "SBU",
+    "StanfordCars",
+    "STL10",
+    "SUN397",
+    "SVHN",
+    "USPS",
+]
+too_big = [
+    "USPS",#redundant with zip data set
+    "SVHN",
+    'FGVCAircraft',
+    'Flowers102',
+    "Food101",
+    'CLEVRClassification',
+    "CelebA",#RuntimeError: The MD5 checksum of the download file data/CelebA/celeba/img_align_celeba.zip does not match the one on record.Please delete the file and try again. If the issue persists, please report this to torchvision at https://github.com/pytorch/vision/issues.
+    "Country211",
+    "DTD",#RuntimeError: stack expects each tensor to be equal size, but got [3, 600, 600] at entry 0 and [3, 500, 500] at entry 1
+    "GTSRB",
+    'RenderedSST2',
+    "PCAM",
+    "Kinetics",
+    "Kitti",
+    "LFWPairs",
+    "StanfordCars",#urllib.error.HTTPError: HTTP Error 404: Not Found
+    "LFWPeople",
+    'Places365',
+    "OxfordIIITPet",#RuntimeError: stack expects each tensor to be equal size, but got [3, 500, 394] at entry 0 and [3, 313, 450] at entry 1
+    "Imagenette",#RuntimeError: stack expects each tensor to be equal size, but got [3, 375, 500] at entry 0 and [3, 500, 375] at entry 6
+]
+for data_name in class_data_names:
     data_class = getattr(torchvision.datasets, data_name)
     ann_dict = getattr(data_class.__init__, "__annotations__", {})
     doc_string = data_class.__doc__
     doc_dict = get_arg_dict(doc_string)
     cache_dir = os.path.join("data", data_name)
     out_csv = cache_dir+".csv"
-    if not os.path.exists(out_csv):
+    if not os.path.exists(out_csv) and "download" in doc_dict and not data_name in too_big and ("train" in doc_dict or "split" in doc_dict):
         data_df_list = []
         class_kwargs = {
             "root":cache_dir,
             "download":True,
             "transform":ToTensor()
         }
-        if "train" in doc_dict and "download" in doc_dict:
+        if "train" in doc_dict:
             more_kwargs = train_arg_dict.get(data_name, {})
             class_kwargs.update(more_kwargs)
             for train in True, False:
@@ -85,7 +144,7 @@ for data_name in dir(torchvision.datasets):
                 try:
                     split_val_list = split_info.pop("split")
                     class_kwargs.update(split_info)
-                except TypeError:
+                except AttributeError:
                     split_val_list = split_info
             split_val_set = set(split_val_list)
             print({data_name:(split_val_set, split_doc)})
