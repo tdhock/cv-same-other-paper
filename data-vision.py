@@ -157,7 +157,7 @@ for data_name in class_data_names:
                     input_tensor, output_tensor = b
                     data_df_list.append(pandas.concat([
                         pandas.DataFrame({
-                            "split":split,
+                            "predefined.set":split,
                             "y":output_tensor,
                         }),
                         pandas.DataFrame(input_tensor.flatten(start_dim=1))

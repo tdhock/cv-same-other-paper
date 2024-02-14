@@ -1,0 +1,79 @@
+library(data.table)
+(data.csv.vec <- Sys.glob("data/*.csv"))
+task.list <- list()
+for(data.csv in data.csv.vec){
+  task_id <- gsub("data/|.csv","",data.csv)
+  task.dt <- fread(
+    data.csv,
+    colClasses=list(factor="y"),
+    check.names=TRUE)#required by mlr3.
+  task.list[[task_id]] <- mlr3::TaskClassif$new(
+    task_id, task.dt, target="y"
+  )$set_col_roles(
+    "predefined.set",c("group","stratum")
+  )$set_col_roles(
+    "y",c("target","stratum")
+  )
+}  
+
+same_other_cv <- mlr3resampling::ResamplingSameOtherCV$new()
+same_other_cv$param_set$values$folds <- 10
+cvg <- mlr3learners::LearnerClassifCVGlmnet$new()
+(reg.learner.list <- list(
+  cvg,
+  mlr3::LearnerClassifRpart$new(),
+  mlr3::LearnerClassifFeatureless$new()))
+(reg.bench.grid <- mlr3::benchmark_grid(
+  task.list,
+  reg.learner.list,
+  same_other_cv))
+reg.dir <- "/scratch/th798/cv-same-other-paper/data-batchmark-registry"
+unlink(reg.dir, recursive=TRUE)
+reg = batchtools::makeExperimentRegistry(
+  file.dir = reg.dir,
+  seed = 1,
+  packages = "mlr3verse"
+)
+mlr3batchmark::batchmark(
+  reg.bench.grid, store_models = TRUE, reg=reg)
+(job.table <- batchtools::getJobTable(reg=reg))
+chunks <- data.frame(job.table, chunk=1)
+batchtools::submitJobs(chunks, resources=list(
+  walltime = 24*60*60,#seconds
+  memory = 64000,#megabytes per cpu
+  ncpus=1,  #>1 for multicore/parallel jobs.
+  ntasks=1, #>1 for MPI jobs.
+  chunks.as.arrayjobs=TRUE), reg=reg)
+
+reg.dir <- "data-batchmark-registry"
+reg=batchtools::loadRegistry(reg.dir)
+print(batchtools::getStatus(reg=reg))
+jobs.after <- batchtools::getJobTable(reg=reg)
+table(jobs.after$error)
+ids <- jobs.after[!is.na(done) & is.na(error), job.id]
+ignore.learner <- function(L){
+  L$learner_state$model <- NULL
+  L
+}
+if(FALSE){#https://github.com/mlr-org/mlr3batchmark/pull/29
+  remotes::install_github("tdhock/mlr3batchmark@reduceResultsList.fun")
+}
+bmr = mlr3batchmark::reduceResultsBatchmark(ids, reg = reg, store_backends = FALSE, reduceResultsList.fun=ignore.learner)
+out.RData <- paste0(reg.dir, ".RData")
+save(bmr, file=out.RData)
+
+
+result <- readRDS("~/genomic-ml/projects/cv-same-other-paper/data-batchmark-registry/results/1.rds")
+
+orig.tabs = batchtools::getJobTable(ids, reg = reg)[, c(
+  "job.id", "job.name", "repl", "prob.pars", "algo.pars"), with = FALSE]
+unnest.tabs = mlr3misc::unnest(orig.tabs, c("prob.pars", "algo.pars"))
+tabs = split(unnest.tabs, by = "job.name")
+bmr = mlr3::BenchmarkResult$new()
+
+result.list <- list()
+for (tab.i in seq_along(tabs)) {
+  cat(sprintf("%4d / %4d\n", tab.i, length(tabs)))
+  tab <- tabs[[tab.i]]
+  result.list[[tab.i]] <- batchtools::reduceResultsList(tab$job.id, reg = reg, fun=ignore.learner)
+}

@@ -1,22 +1,33 @@
+** 14 Feb 2024
+
+[[file:data-batchmark-registry.R]] reads result of [[file:data-batchmark.R]]
+and writes [[file:data-batchmark-registry.csv]] and creates visualizations
+below,
+
+[[file:data-batchmark-registry-glmnet-featureless.png]]
+
+[[file:data-batchmark-registry-glmnet-median-quartiles.png]]
+
 ** 6 Feb 2024
 
-data-meta.R analyzes 
+[[file:data-meta.R][data-meta.R]] creates [[file:data-meta.csv]]
 
 #+begin_src
-       data.name memory.kb disk.kb  test train   rows features     test%
- 1:        vowel        92      69   462   528    990       10 0.4666667
- 2:     waveform       145     122   500   300    800       21 0.6250000
- 3:         khan      2003    2210    25    63     88     2308 0.2840909
- 4:         spam      2078     707  1536  3065   4601       57 0.3338405
- 5:      zipUSPS     18752    9249  2007  7291   9298      256 0.2158529
- 6:     14cancer     22546   11733    54   144    198    16063 0.2727273
- 7:       EMNIST    429712  333360 10000 60000  70000      784 0.1428571
- 8: FashionMNIST    429712  385816 10000 60000  70000      784 0.1428571
- 9:       KMNIST    429712  313810 10000 60000  70000      784 0.1428571
-10:        MNIST    429712  280627 10000 60000  70000      784 0.1428571
-11:       QMNIST    736548  475002 60000 60000 120000      784 0.5000000
-12:      CIFAR10   1441256 1879899 10000 50000  60000     3072 0.1666667
-13:        STL10   2813121 3605146  8000  5000  13000    27648 0.6153846
+       data.name memory.kb test%   rows features classes min.rows.set.class
+          <char>     <int> <int>  <int>    <int>   <int>              <int>
+ 1:        vowel        92    46    990       10      11                 42
+ 2:     waveform       145    62    800       21       3                 94
+ 3:         khan      2003    28     88     2308       4                  3
+ 4:         spam      2078    33   4601       57       2                595
+ 5:      zipUSPS     18752    21   9298      256      10                147
+ 6:     14cancer     22546    27    198    16063      14                  2
+ 7:       EMNIST    429712    14  70000      784      10               1000
+ 8: FashionMNIST    429712    14  70000      784      10               1000
+ 9:       KMNIST    429712    14  70000      784      10               1000
+10:        MNIST    429712    14  70000      784      10                892
+11:       QMNIST    736548    50 120000      784      10               5421
+12:      CIFAR10   1441256    16  60000     3072      10               1000
+13:        STL10   2813121    61  13000    27648      10                500
 #+end_src
 
 ** Motivation
