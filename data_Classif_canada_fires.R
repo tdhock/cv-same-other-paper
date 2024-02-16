@@ -3,7 +3,7 @@ canada.fires <- fread(
   "data_Classif_canada_fires/Undersampling_75.csv"
 )[, `:=`(
   image=Id_feu,
-  label=classe3
+  y=classe3
 )]
 canada.fires[, table(Id_image, Id_feu)]
 canada.fires[, table(classe2, classe3)]
@@ -17,7 +17,7 @@ fread("data_Classif_canada_fires/select17_vari_undersampling.csv")
 ##     For the input features, you can use all the columns that start with 'mean, max, median and min', dnbr, dnbrwoff, rbr, rbrwoff, rdnbr, rdnbrwoff,NDVI, r,g,b, nir,IB, GCC, VARI
 names(canada.fires)
 keep.cols <- c(
-  "image", "label",
+  "image", "y",
   grep("mean|max|median|min", names(canada.fires), value=TRUE),
   "dnbr", "dnbrwoff", "rbr", "rbrwoff", "rdnbr", "rdnbrwoff",
   #"NDVI",
@@ -25,4 +25,7 @@ keep.cols <- c(
 out.dt <- canada.fires[, keep.cols, with=FALSE]
 na.counts <- colSums(is.na(out.dt))
 na.counts[na.counts>0]
+##Share in public? No problem, maybe just get the column 'interprete' out
+canada.fires$interprete
+out.dt$interprete
 fwrite(out.dt, "data_Classif/CanadaFires.csv")
