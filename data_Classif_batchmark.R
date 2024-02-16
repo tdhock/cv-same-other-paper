@@ -1,8 +1,8 @@
 library(data.table)
-(data.csv.vec <- Sys.glob("data/*.csv"))
+(data.csv.vec <- Sys.glob("data_Classif/*.csv"))
 task.list <- list()
 for(data.csv in data.csv.vec){
-  task_id <- gsub("data/|.csv","",data.csv)
+  task_id <- gsub("data_Classif/|.csv","",data.csv)
   task.dt <- fread(
     data.csv,
     colClasses=list(factor="y"),
@@ -45,7 +45,7 @@ batchtools::submitJobs(chunks, resources=list(
   ntasks=1, #>1 for MPI jobs.
   chunks.as.arrayjobs=TRUE), reg=reg)
 
-reg.dir <- "data-batchmark-registry"
+reg.dir <- "data_Classif_batchmark_registry"
 reg=batchtools::loadRegistry(reg.dir)
 print(batchtools::getStatus(reg=reg))
 jobs.after <- batchtools::getJobTable(reg=reg)
@@ -63,7 +63,7 @@ out.RData <- paste0(reg.dir, ".RData")
 save(bmr, file=out.RData)
 
 
-result <- readRDS("~/genomic-ml/projects/cv-same-other-paper/data-batchmark-registry/results/1.rds")
+result <- readRDS("~/genomic-ml/projects/cv-same-other-paper/data_Classif_batchmark_registry/results/1.rds")
 
 orig.tabs = batchtools::getJobTable(ids, reg = reg)[, c(
   "job.id", "job.name", "repl", "prob.pars", "algo.pars"), with = FALSE]

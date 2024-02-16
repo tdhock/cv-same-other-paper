@@ -35,7 +35,8 @@ for(data.name in c("14cancer", "khan")){
     one.set.dt <- do.call(data.table, unname(dt.args))
     set.list[[predefined.set]] <- data.table(predefined.set, one.set.dt)
   }
-  data.list[[data.name]] <- rbindlist(set.list)
+  ## commented here because these data are too small for CV.
+  ##data.list[[data.name]] <- rbindlist(set.list)
 }
 
 spam.prefix <- paste0(prefix, "spam")
@@ -76,5 +77,5 @@ for(data.name in c("vowel","waveform","zip")){
 
 for(data.name in names(data.list))fwrite(
   data.list[[data.name]],
-  paste0(file.path("data", data.name), ".csv")
+  paste0(file.path("data_Classif", data.name), ".csv")
 )

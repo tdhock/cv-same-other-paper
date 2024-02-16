@@ -1,12 +1,12 @@
 ** 14 Feb 2024
 
-[[file:data-batchmark-registry.R]] reads result of [[file:data-batchmark.R]]
-and writes [[file:data-batchmark-registry.csv]] and creates visualizations
+[[file:data_Classif_batchmark_registry.R]] reads result of [[file:data_Classif_batchmark.R]]
+and writes [[file:data_Classif_batchmark_registry.csv]] and creates visualizations
 below,
 
-[[file:data-batchmark-registry-glmnet-featureless.png]]
+[[file:data_Classif_batchmark_registry_glmnet_featureless.png]]
 
-[[file:data-batchmark-registry-glmnet-median-quartiles.png]]
+[[file:data_Classif_batchmark_registry_glmnet_median_quartiles.png]]
 
 ** 6 Feb 2024
 
@@ -38,7 +38,7 @@ below,
   - mlr3data https://mlr3data.mlr-org.com/ TODO
   - caret https://topepo.github.io/caret/data-sets.html segmentationData has Case column with values Train and Test. TODO
   - tidymodels https://modeldata.tidymodels.org/reference/index.html TODO
-  - [[https://hastie.su.domains/ElemStatLearn/data.html][ESL2 data]] processed in [[file:data.R]]
+  - [[https://hastie.su.domains/ElemStatLearn/data.html][ESL2 data]] processed in [[file:data_Classif_esl2.R]]
   - list of image classification data sets: https://pytorch.org/vision/stable/datasets.html
   - pages like
     https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST

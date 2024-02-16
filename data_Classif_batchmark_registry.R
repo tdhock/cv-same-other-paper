@@ -1,7 +1,7 @@
 library(ggplot2)
 library(data.table)
 
-(objs=load("data-batchmark-registry.RData"))
+(objs=load("data_Classif_batchmark_registry.RData"))
 meta.dt <- data.table::fread("data-meta.csv")
 score.dt <- mlr3resampling::score(bmr)
 score.dt[
@@ -10,9 +10,9 @@ score.dt[
 , data.name := task_id
 ]
 score.atomic <- score.dt[,sapply(score.dt, class)!="list", with=FALSE]
-fwrite(score.atomic, "data-batchmark-registry.csv")
+fwrite(score.atomic, "data_Classif_batchmark_registry.csv")
 
-score.atomic <- fread("data-batchmark-registry.csv")
+score.atomic <- fread("data_Classif_batchmark_registry.csv")
 score.join <- meta.dt[score.atomic, on="data.name"]
 
 dot.counts <- dcast(
@@ -35,7 +35,7 @@ gg <- ggplot()+
     "Percent prediction error on CV test set in predefined set (one dot for each of 10 folds in CV)")+
   scale_y_discrete(
     "Predefined set(s) used for CV train set")
-png("data-batchmark-registry-glmnet-featureless.png", width=20, height=4, units="in", res=100)
+png("data_Classif_batchmark_registry_glmnet_featureless.png", width=20, height=4, units="in", res=100)
 print(gg)
 dev.off()
 
@@ -79,7 +79,7 @@ gg <- ggplot()+
     "Percent prediction error on CV test set in predefined set (median and quartiles)")+
   scale_y_discrete(
     "Predefined set(s) used for glmnet CV train set")
-png("data-batchmark-registry-glmnet-median-quartiles.png", width=20, height=4, units="in", res=100)
+png("data_Classif_batchmark_registry_glmnet_median_quartiles.png", width=20, height=4, units="in", res=100)
 print(gg)
 dev.off()
 system("cd /projects/genomic-ml && unpublish_data projects/cv-same-other-paper && publish_data projects/cv-same-other-paper")
