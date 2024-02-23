@@ -1,3 +1,25 @@
+** 23 Feb 2024
+
+[[file:data_Classif_canada_fires.R]] makes data_Classif/CanadaFires*csv and
+
+#+begin_src R
+> canada.fires[, table(classe2, classe3)]
+                  classe3
+classe2            charred green other road scorched shadow water
+  bare                   0     0    66    0        0      0     0
+  bog                    0     0    41    0        0      0     0
+  charred              288     0     0    0        0      0     0
+  green                  0   176     0    0        0      0     0
+  Lichen                 0     0    47    0        0      0     0
+  lowgreen               0   124     0    0        0      0     0
+  Mortality              0     0    63    0        0      0     0
+  road                   0     0     0  169        0      0     0
+  scorched               0     0     0    0      300      0     0
+  shadow(affected)       0     0     0    0        0     91     0
+  shadow(green)          0     0     0    0        0     81     0
+  water                  0     0     0    0        0      0   217
+#+end_src
+
 ** 14 Feb 2024
 
 [[file:data_Classif_batchmark_registry.R]] reads result of [[file:data_Classif_batchmark.R]]
