@@ -58,7 +58,7 @@ ignore.learner <- function(L){
 if(FALSE){#https://github.com/mlr-org/mlr3batchmark/pull/29
   remotes::install_github("tdhock/mlr3batchmark@reduceResultsList.fun")
 }
-bmr = mlr3batchmark::reduceResultsBatchmark(ids, reg = reg, store_backends = FALSE, reduceResultsList.fun=ignore.learner)
+bmr = mlr3batchmark::reduceResultsBatchmark(ids, reg = reg, store_backends = FALSE, fun=ignore.learner)
 out.RData <- paste0(reg.dir, ".RData")
 save(bmr, file=out.RData)
 

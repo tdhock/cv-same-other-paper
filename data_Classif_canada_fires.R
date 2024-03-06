@@ -12,13 +12,27 @@ for(fires.name in names(fires.csv.list)){
   print(path.csv)
   canada.fires <- fread(
     path.csv
-  )[, `:=`(
-    image=Id_feu,
-    y=classe2
-  )]
+  )[
+  , image := Id_feu
+  ]
   print(names(canada.fires))
+  summary(canada.fires)
+  y.var <- if("classe3" %in% names(canada.fires)){
+    "classe3"
+  }else{
+    "classe2"
+  }
+  set(
+    canada.fires,
+    j="y",
+    value=ifelse(
+      canada.fires[[y.var]] %in% c("charred","scorched"),
+      "burned",
+      "no burn"))
   canada.fires[, table(Id_image, Id_feu)]
   print(canada.fires[, table(classe2)])
+  ##print(canada.fires[, table(geometry)])
+  ##print(canada.fires[, table(Id_image)])
   ##canada.fires[, table(classe2, classe3)]
   table(canada.fires[[5]], canada.fires[[10]])#both id_feu
   ## here is the data (Undersampling_75) that I think would work the best. Its a undersampling of my original data to have a more equal number of points by class and by image. I kept only one satellite since using images from three created to much variability in the input data.
@@ -33,6 +47,7 @@ for(fires.name in names(fires.csv.list)){
     "NDVI",
     "r","g","b", "nir","IB", "GCC", "VARI")
   out.dt <- canada.fires[, keep.cols, with=FALSE]
+  print(out.dt[, table(image,y)])
   na.counts <- colSums(is.na(out.dt))
   ##Share in public? No problem, maybe just get the column 'interprete' out
   canada.fires$interprete
@@ -43,6 +58,7 @@ for(fires.name in names(fires.csv.list)){
     print(out.csv)
     fwrite(out.dt, out.csv)
   }else{
+    print("NA found so not outputting CSV")
     print(na.counts[na.counts>0])
   }
 }

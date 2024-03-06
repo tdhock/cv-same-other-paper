@@ -1,3 +1,28 @@
+** 6 Mar 2024
+
+[[file:data-meta.R]] updated to handle more groups:
+
+#+BEGIN_SRC 
+                  data.name memory.kb   rows n.groups small_group small_N large_group large_N features classes min.rows
+                     <char>     <int>  <int>    <int>      <char>   <int>      <char>   <int>    <int>   <int>    <int>
+ 1:                   vowel        92    990        2        test     462       train     528       10      11       42
+ 2:                waveform       145    800        2       train     300        test     500       21       3       94
+ 3: CanadaFires_downSampled       353   1491        4         306     287         395     450       46       2      138
+ 4:                aztrees3       587   5956        3          NE    1464           S    2929       21       2       55
+ 5:                aztrees4       587   5956        4          SW     497          SE    2432       21       2       55
+ 6:         CanadaFires_all      1122   4827        4         306     364         326    2538       46       2      140
+ 7:                    spam      2078   4601        2        test    1536       train    3065       57       2      595
+ 8:                 zipUSPS     18752   9298        2        test    2007       train    7291      256      10      147
+ 9:             NSCH_autism     66242  46010        2        2019   18202        2020   27808      364       2      546
+10:                  EMNIST    429712  70000        2        test   10000       train   60000      784      10     1000
+11:            FashionMNIST    429712  70000        2        test   10000       train   60000      784      10     1000
+12:                  KMNIST    429712  70000        2        test   10000       train   60000      784      10     1000
+13:                   MNIST    429712  70000        2        test   10000       train   60000      784      10      892
+14:                  QMNIST    736548 120000        2        test   60000       train   60000      784      10     5421
+15:                 CIFAR10   1441256  60000        2        test   10000       train   50000     3072      10     1000
+16:                   STL10   2813121  13000        2       train    5000        test    8000    27648      10      500
+#+END_SRC
+
 ** 23 Feb 2024
 
 [[file:data_Classif_canada_fires.R]] makes data_Classif/CanadaFires*csv and
