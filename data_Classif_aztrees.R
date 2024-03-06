@@ -78,6 +78,8 @@ for(n.regions in 3:4){
     , with=FALSE],
     sprintf("data_Classif/aztrees%d.csv", n.regions))
 }
+AZtrees <- aztrees[, c("region3","region4","polygon","y",feature.names), with=FALSE]
 fwrite(
-  aztrees[, c("region3","region4","polygon","y",feature.names), with=FALSE],
+  AZtrees,
   "data_Classif_aztrees_regions.csv")
+save(AZtrees, file="~/R/mlr3resampling/data/AZtrees.RData")
