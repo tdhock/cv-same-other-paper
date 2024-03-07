@@ -57,18 +57,32 @@ aztrees[, .(
   polygons=length(unique(polygon)),
   rows=.N
 ), keyby=.(region3,y)]
-ggplot()+
-  geom_point(aes(
-    xcoord, ycoord, color=region3),
-    data=aztrees)
-ggplot()+
-  geom_point(aes(
-    xcoord, ycoord, color=region4),
-    data=aztrees)
-ggplot()+
-  geom_point(aes(
-    xcoord, ycoord, color=y),
-    data=aztrees)
+
+color.scale <- scale_color_manual(
+  "class to\npredict",
+  values=c(Tree="black", "Not tree"="white"))
+for(n.regions in 3:4){
+  gg <- ggplot()+
+    ggtitle(paste0("Data: aztrees", n.regions))+
+    directlabels::geom_dl(aes_string(
+      "xcoord","ycoord",
+      fill=paste0("region",n.regions),
+      label=paste0("region",n.regions)),
+      method=list("smart.grid","draw.rects"),
+      data=aztrees)+
+    geom_point(aes_string(
+      "xcoord","ycoord",
+      fill=paste0("region",n.regions),
+      color="y"),
+      shape=21,
+      data=aztrees)+
+    color.scale
+  out.png <- sprintf("data_Classif_aztrees%d.png", n.regions)
+  png(out.png, width=6, height=6, res=200, units="in")
+  print(gg)
+  dev.off()
+}
+
 feature.names <- grep("SAMPLE",names(aztrees),value=TRUE)
 for(n.regions in 3:4){
   region.col <- paste0("region",n.regions)
