@@ -10,31 +10,23 @@ for(data.csv in data.csv.vec){
   task.obj <- mlr3::TaskClassif$new(
     task_id, task.dt, target="y")
   group.col <- names(task.dt)[1]
-  task.obj$col_roles$group <- group.col
+  task.obj$col_roles$group_generalization <- group.col
   task.obj$col_roles$stratum <- c(group.col, "y")
   task.obj$col_roles$feature <- setdiff(names(task.dt), task.obj$col_roles$stratum)
   task.list[[task_id]] <- task.obj
 }  
 scratch.dir <- "/scratch/th798/cv-same-other-paper"
 dir.create(scratch.dir, showWarnings=FALSE)
-
-reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_registry")
-same_other_cv <- mlr3resampling::ResamplingSameOtherCV$new()
-same_other_cv$param_set$values$folds <- 10
-(class.learner.list <- list(
-  mlr3learners::LearnerClassifCVGlmnet$new(),
-  mlr3::LearnerClassifFeatureless$new()))
-
 reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_sizes_registry")
 same_other_cv <- mlr3resampling::ResamplingSameOtherSizesCV$new()
 same_other_cv$param_set$values$folds <- 10
-(class.learner.list <- list(
-  mlr3learners::LearnerClassifCVGlmnet$new()))
-
+class.learner.list <- list(
+  mlr3learners::LearnerClassifCVGlmnet$new())
 (class.bench.grid <- mlr3::benchmark_grid(
   task.list,
   class.learner.list,
   same_other_cv))
+
 unlink(reg.dir, recursive=TRUE)
 reg = batchtools::makeExperimentRegistry(
   file.dir = reg.dir,
