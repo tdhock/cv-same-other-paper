@@ -44,7 +44,6 @@ batchtools::submitJobs(chunks, resources=list(
   ntasks=1, #>1 for MPI jobs.
   chunks.as.arrayjobs=TRUE), reg=reg)
 
-reg.dir <- "data_Classif_batchmark_registry"
 reg=batchtools::loadRegistry(reg.dir)
 print(batchtools::getStatus(reg=reg))
 jobs.after <- batchtools::getJobTable(reg=reg)
@@ -60,6 +59,10 @@ if(FALSE){#https://github.com/mlr-org/mlr3batchmark/pull/29
 bmr = mlr3batchmark::reduceResultsBatchmark(ids, reg = reg, store_backends = FALSE, fun=ignore.learner)
 out.RData <- paste0(reg.dir, ".RData")
 save(bmr, file=out.RData)
+score.dt <- mlr3resampling::score(bmr)
+out.csv <- paste0(reg.dir, ".csv")
+score.atomic <- score.dt[,sapply(score.dt, class)!="list", with=FALSE]
+fwrite(score.atomic, out.csv)
 
 
 result <- readRDS("~/genomic-ml/projects/cv-same-other-paper/data_Classif_batchmark_registry/results/1.rds")
