@@ -61,7 +61,14 @@ out.RData <- paste0(reg.dir, ".RData")
 save(bmr, file=out.RData)
 score.dt <- mlr3resampling::score(bmr)
 out.csv <- paste0(reg.dir, ".csv")
-score.atomic <- score.dt[,sapply(score.dt, class)!="list", with=FALSE]
+score.dt[, `:=`(
+  n.train = sapply(train, length),
+  n.test = sapply(test, length)
+)]
+score.atomic <- score.dt[,.(
+  test.group, train.groups, atoms, test.fold,
+  seed, n.train.atoms, iteration,
+  task_id, classif.ce, algorithm, n.train, n.test)]
 fwrite(score.atomic, out.csv)
 
 
