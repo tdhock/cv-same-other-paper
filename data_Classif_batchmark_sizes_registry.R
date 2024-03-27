@@ -1,4 +1,3 @@
-library(ggplot2)
 library(data.table)
 work.dir <- "."
 reg.csv <- file.path(work.dir, "data_Classif_batchmark_sizes_registry.csv")
@@ -18,7 +17,13 @@ score.dt[
 , data.name := task_id
 ]
 score.join <- meta.dt[score.dt, on="data.name"]
+NSCH.result <- score.join[
+  data.name=="NSCH_autism", .(
+    train.groups, atoms, n.train.atoms, test.fold,
+    seed, algorithm, percent.error)]
+fwrite(NSCH.result, "~/teaching/2024-01-ml-for-autism/figures-same-other/NSCH_autism_error.csv")
 
+library(ggplot2)
 data.list <- split(score.join, score.join$data.name)
 for(data.name in names(data.list)){
   print(data.name)
