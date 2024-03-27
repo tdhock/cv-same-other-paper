@@ -163,7 +163,7 @@ for(data.name in names(data.list)){
       data=data.scores)+
     facet_grid(test.group ~ test.fold, labeller=label_both, scales="free")
   more.scores <- setkey(
-    data.scores[n.train.atoms>=min(atoms)],
+    data.scores[, .SD[n.train.atoms %in% atoms], by=test.group],
     train.groups, n.train.atoms
   )[
   , train.groups.N := paste(train.groups, as.integer(n.train.atoms))
@@ -266,7 +266,7 @@ for(data.name in names(data.list)){
     "data_Classif_figures/%s_error_mean_sd_more.png",
     data.name)
   max.ticks <- more.stats[, .(ticks=.N), by=test.group][, max(ticks)]
-  png(out.png, height=1.5+max.ticks/3, width=(n.test+1)*2, units="in", res=200)
+  png(out.png, height=1.5+max.ticks/3, width=(n.test+1)*2.5, units="in", res=200)
   print(gg)
   dev.off()
 }
