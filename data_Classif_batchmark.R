@@ -18,18 +18,23 @@ for(data.csv in data.csv.vec){
 scratch.dir <- "/scratch/th798/cv-same-other-paper"
 dir.create(scratch.dir, showWarnings=FALSE)
 
-reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_registry")
-same_other_cv <- mlr3resampling::ResamplingSameOtherCV$new()
-same_other_cv$param_set$values$folds <- 10
-(class.learner.list <- list(
-  mlr3learners::LearnerClassifCVGlmnet$new(),
-  mlr3::LearnerClassifFeatureless$new()))
-
-reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_sizes_registry")
-same_other_cv <- mlr3resampling::ResamplingSameOtherSizesCV$new()
-same_other_cv$param_set$values$folds <- 10
-(class.learner.list <- list(
-  mlr3learners::LearnerClassifCVGlmnet$new()))
+if(do.sizes){
+  reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_sizes_registry")
+  same_other_cv <- mlr3resampling::ResamplingSameOtherSizesCV$new()
+  same_other_cv$param_set$values$folds <- 10
+  (class.learner.list <- list(
+    mlr3learners::LearnerClassifCVGlmnet$new()))
+}else{
+  reg.dir <- file.path(scratch.dir, "data_Classif_batchmark_registry")
+  same_other_cv <- mlr3resampling::ResamplingSameOtherCV$new()
+  same_other_cv$param_set$values$folds <- 10
+  (class.learner.list <- list(
+    mlr3learners::LearnerClassifCVGlmnet$new(),
+    mlr3::LearnerClassifFeatureless$new()))
+}
+for(learner.i in seq_along(class.learner.list)){
+  class.learner.list[[learner.i]]$predict_type <- "prob"
+}
 
 (class.bench.grid <- mlr3::benchmark_grid(
   task.list,

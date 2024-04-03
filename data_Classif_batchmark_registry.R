@@ -12,7 +12,7 @@ meta.dt <- data.table::fread("data-meta.csv")[
 ][
 , `test%` := as.integer(100*test/rows)
 ][]
-score.dt <- mlr3resampling::score(bmr)
+score.dt <- mlr3resampling::score(bmr, mlr3::msrs(c("classif.auc","classif.ce")))
 score.dt[
 , percent.error := 100*classif.ce
 ][

@@ -1,11 +1,13 @@
 library(data.table)
-system("wc -l data_Classif_FishSonar.csv")
-system("nl data_Classif_FishSonar.csv | grep river")
-system("nl data_Classif_FishSonar.csv | grep '[.][0-9]*[.]'")
-system("grep river data_Classif_FishSonar.csv | head -1 > data_Classif_FishSonar_processed.csv")
-system("cat data_Classif_FishSonar_processed.csv")
-system("grep -v river data_Classif_FishSonar.csv | grep -v '[.][0-9]*[.]' >> data_Classif_FishSonar_processed.csv")
-FishSonar <- fread("data_Classif_FishSonar_processed.csv")
+if(FALSE){
+  system("wc -l data_Classif_FishSonar.csv")#2815745 data_Classif_FishSonar.csv
+  system("nl data_Classif_FishSonar.csv | grep river")#should be one line
+  system("nl data_Classif_FishSonar.csv | grep '[.][0-9]*[.]'")#should be none
+  system("grep river data_Classif_FishSonar.csv | head -1 > data_Classif_FishSonar_processed.csv")
+  system("cat data_Classif_FishSonar_processed.csv")
+  system("grep -v river data_Classif_FishSonar.csv | grep -v '[.][0-9]*[.]' >> data_Classif_FishSonar_processed.csv")
+}
+FishSonar <- fread("data_Classif_FishSonar.csv")
 dim(FishSonar)
 FishSonar[1]
 FishSonar[is.na(as.numeric(`mean_xmin=-1_xmax=8_ymin=0_ymax=9`))]
@@ -23,20 +25,25 @@ imgID.pattern <- list(
   id2=".*?",
   "_",
   ymd=".*?",
-  "_USM1_",
+  "_",
+  service=".*?",
+  "_",
   nc::field("Rec", "", ".*?"),
   "_ss_",
   side=".*?",
   "_",
-  last=".*")
-count.dt <- nc::capture_first_df(
-  FishSonar[, .(pixels=.N), by=.(imgID,label)],
+  last="[^_]+",
+  suffix=".*")
+(count.dt <- FishSonar[, .(pixels=.N), by=.(imgID,label,label_name)])
+count.parsed.dt <- nc::capture_first_df(
+  count.dt,
   imgID=imgID.pattern)
-## below shows that id1,id2,ymd,Rec are redundant.
-count.dt[, .(pixels=sum(pixels)), by=.(id1, id2, ymd, Rec)]
-count.dt[, .(ymd, side, last, pixels)]
+## below shows that ymd,Rec are not redundant.
+count.parsed.dt[, .(pixels=sum(pixels)), keyby=.(ymd, river)]
+count.parsed.dt[, .(ymd, side, last, pixels)]
 
-count.dt[, .(pixels=sum(pixels)), keyby=.(ymd, label)]
+count.parsed.dt[, .(pixels=sum(pixels)), keyby=.(ymd, label_name)]
+count.parsed.dt[, .(pixels=sum(pixels)), keyby=.(river, label, label_name)]
 
     
 FishSonar[, which(river=="river")]
@@ -49,7 +56,7 @@ ymd.pattern <- list(
   ".*?",
   "_",
   ymd=".*?",
-  "_USM1_",
+  "_.*?_",
   ".*?",
   "_ss_",
   side=".*?",
@@ -58,7 +65,9 @@ ymd.pattern <- list(
 nc::capture_first_df(
   FishSonar,
   imgID=ymd.pattern)
-FishSonar[, y := ifelse(label==1, 1, 0)]
-name.vec <- c("ymd", "y", grep("mean", names(FishSonar), value=TRUE))
+FishSonar[, y := ifelse(label_name=="Hard Bottom", "hard", "other")]
+name.vec <- c("river", "y", grep("mean", names(FishSonar), value=TRUE))
 out.dt <- FishSonar[, name.vec, with=FALSE]
-fwrite(out.dt, "data_Classif/FishSonar_day.csv")
+fwrite(out.dt, "data_Classif/FishSonar_river.csv")
+out.dt <- fread("data_Classif/FishSonar_river.csv")
+out.dt[, table(river, y)]

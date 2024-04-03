@@ -1,7 +1,9 @@
 library(data.table)
 (data.csv.vec <- Sys.glob("data_Classif/*.csv"))
 meta.dt.list <- list()
-for(data.csv in data.csv.vec){
+for(data.csv.i in seq_along(data.csv.vec)){
+  data.csv <- data.csv.vec[[data.csv.i]]
+  cat(sprintf("%4d / %4d %s\n", data.csv.i, length(data.csv.vec), data.csv))
   data.dt <- fread(data.csv)
   memory.bytes <- object.size(data.dt)
   disk.bytes <- file.size(data.csv)
