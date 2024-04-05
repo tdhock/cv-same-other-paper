@@ -19,6 +19,7 @@ for(data.csv.i in seq_along(data.csv.vec)){
     memory.kb=bytes2kb(memory.bytes),
     rows=nrow(data.dt),
     n.groups,
+    group.tab=paste(paste0(names(group.tab),"=",group.tab), collapse=";"),
     small_group=names(group.tab)[1],
     small_N=group.tab[1],
     large_group=names(group.tab)[n.groups],
