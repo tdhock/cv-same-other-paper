@@ -90,15 +90,22 @@ dcast(
   score.dt,
   test.group+test.fold+ train.groups+ difficulty+algorithm ~ similarity,
   value.var="classif.ce")
-ggplot()+
+gg <- ggplot()+
   theme_bw()+
+  theme(panel.spacing=grid::unit(1,"lines"))+
   geom_point(aes(
     classif.ce, train.groups, color=algorithm),
     shape=1,
     data=score.dt)+
   facet_grid(
     similarity ~ difficulty,
-    labeller=label_both, scales="free")
+    labeller=label_both)+
+  scale_x_continuous(
+    "Test error",
+    breaks=seq(0, 1, by=0.5))
+png("data_Classif_simulation_error_panels.png", width=6, height=5.5, units="in", res=300)
+print(gg)
+dev.off()
 
 score.mean <- dcast(
   score.dt,
@@ -117,7 +124,7 @@ ggplot()+
 
 
 line.color <- "grey"
-ggplot()+
+gg <- ggplot()+
   theme_bw()+
   geom_vline(
     color=line.color,
@@ -135,4 +142,6 @@ ggplot()+
     label=sub(",","\n",similarity)),
     data=score.mean)+
   facet_grid(. ~ difficulty, labeller=label_both)
-    
+png("data_Classif_simulation_scatter.png", width=6, height=5.5, units="in", res=300)
+print(gg)
+dev.off()
