@@ -1,5 +1,4 @@
 library(data.table)
-system("wc -l data_Classif_FishSonar.csv")
 system("nl data_Classif_FishSonar.csv | grep river")
 system("nl data_Classif_FishSonar.csv | grep '[.][0-9]*[.]'")
 system("grep river data_Classif_FishSonar.csv | head -1 > data_Classif_FishSonar_processed.csv")
