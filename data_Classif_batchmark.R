@@ -32,10 +32,10 @@ if(do.sizes){
     mlr3learners::LearnerClassifCVGlmnet$new(),
     mlr3::LearnerClassifFeatureless$new()))
 }
+
 for(learner.i in seq_along(class.learner.list)){
   class.learner.list[[learner.i]]$predict_type <- "prob"
 }
-
 (class.bench.grid <- mlr3::benchmark_grid(
   task.list,
   class.learner.list,

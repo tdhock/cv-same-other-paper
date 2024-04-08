@@ -14,19 +14,27 @@ for(data.csv.i in seq_along(data.csv.vec)){
   (label.tab <- table(y.vec))
   (both.tab <- table(y.vec, group.vec))
   bytes2kb <- function(x)as.integer(x/1024)
-  meta.dt.list[[data.csv]] <- data.table(
+  tab2dt <- function(tab){
+    data.table(
+      name=names(tab)[1],
+      N=tab[1])
+  }
+  small_large <- function(tab){
+    data.table(
+      small=tab2dt(tab[1]),
+      large=tab2dt(tab[length(tab)]))
+  }
+  meta.dt.list[[data.csv]] <- print(data.table(
     data.name=gsub(".*/|.csv","",data.csv),
     memory.kb=bytes2kb(memory.bytes),
     rows=nrow(data.dt),
     n.groups,
     group.tab=paste(paste0(names(group.tab),"=",group.tab), collapse=";"),
-    small_group=names(group.tab)[1],
-    small_N=group.tab[1],
-    large_group=names(group.tab)[n.groups],
-    large_N=group.tab[n.groups],
+    group=small_large(group.tab),
+    label=small_large(label.tab),
     features=ncol(data.dt)-2L,
     classes=length(label.tab),
-    min.rows=min(both.tab))
+    min.rows=min(both.tab)))
 }
 options(width=150)
 (meta.dt <- setkey(
