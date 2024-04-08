@@ -1,3 +1,11 @@
+** 4 Apr 2024
+
+[[file:data_Classif_simulation.R]] makes
+
+[[file:data_Classif_simulation_error_panels.png]]
+
+[[file:data_Classif_simulation_scatter.png]]
+
 ** 6 Mar 2024
 
 [[file:data-meta.R]] updated to handle more groups:

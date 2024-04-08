@@ -1,5 +1,6 @@
 library(data.table)
 work.dir <- "."
+work.dir <- "/scratch/th798/cv-same-other-paper"
 reg.csv <- file.path(work.dir, "data_Classif_batchmark_sizes_registry.csv")
 score.dt <- fread(reg.csv)
 
@@ -11,6 +12,12 @@ meta.dt <- data.table::fread("data-meta.csv")[
 ][
 , `test%` := as.integer(100*test/rows)
 ][]
+group.meta <- meta.dt[, nc::capture_all_str(
+  group.tab,
+  test.group="[^;]+",
+  "=",
+  group.rows="[0-9]+", as.integer
+), by=data.name]
 score.dt[
 , percent.error := 100*classif.ce
 ][
@@ -28,7 +35,9 @@ data.list <- split(score.join, score.join$data.name)
 for(data.name in names(data.list)){
   print(data.name)
   data.scores <- data.list[[data.name]]
-  full.size <- data.scores[atoms==n.train.atoms]
+  full.size <- group.meta[
+    data.scores[atoms==n.train.atoms],
+    on=.(data.name, test.group)]
   tit <- ggtitle(paste("Data set:", data.name))
   gg <- ggplot()+
     tit+
@@ -38,12 +47,12 @@ for(data.name in names(data.list)){
       data=full.size)+
     facet_grid(. ~ test.group, labeller=label_both, scales="free")+
     scale_x_continuous(
-      "Percent prediction error on CV test group (one dot for each of 10 folds in CV)")+
+      "Percent prediction error on CV test group (one dot for each of 10 folds in CV/3 random seeds)")+
     scale_y_discrete(
       "Train groups")
   dir.create("data_Classif_figures", showWarnings = FALSE)
   out.png <- sprintf(
-    "data_Classif_figures/%s_error_each_fold.png",
+    "data_Classif_figures/%s_error_glmnet_sizes_each_fold.png",
     data.name)
   png(out.png, width=8, height=2, units="in", res=200)
   print(gg)
@@ -51,7 +60,7 @@ for(data.name in names(data.list)){
   p.color <- "red"
   score.stats <- dcast(
     full.size,
-    train.groups + test.group + algorithm ~ .,
+    train.groups + test.group + group.rows + algorithm ~ .,
     list(mean, sd, length),
     value.var="percent.error")
   score.wide.train <- dcast(
@@ -74,7 +83,7 @@ for(data.name in names(data.list)){
   , same_mean := percent.error_mean
   ][]
   vline.dt <- glmnet.same[
-  , .(same_mean, test.group)]
+  , .(same_mean, test.group, group.rows)]
   train.p.values <- score.wide.train.compare[, {
     test.res <- t.test(
       value,
@@ -129,16 +138,16 @@ for(data.name in names(data.list)){
       data=train.p.values,
       color=p.color)+
     facet_grid(
-      . ~ test.group,
+      . ~ test.group + group.rows,
       scales="free",
       labeller=label_both)+
     scale_x_continuous(
-      "Percent prediction error on test set\n(mean +/- SD over 10 folds, paired t-test in red)")
+      "Percent prediction error on test set\nmean±SD over 10 folds/3 random seeds\npaired t-test in red")
   n.test <- length(unique(score.stats$test.group))
   out.png <- sprintf(
-    "data_Classif_figures/%s_error_mean_sd.png",
+    "data_Classif_figures/%s_error_glmnet_sizes_mean_SD_pvalue.png",
     data.name)
-  png(out.png, height=2, width=(n.test+1)*1.5, units="in", res=200)
+  png(out.png, height=2.5, width=(n.test+1)*1.5, units="in", res=200)
   print(gg)
   dev.off()
   ggplot()+
@@ -177,51 +186,11 @@ for(data.name in names(data.list)){
   ][
   , train.size := ifelse(n.train.atoms==atoms, "full", "reduced")
   ][]
-  gg <- ggplot()+
-    tit+
-    geom_point(aes(
-      percent.error, train.groups.N.fac, color=train.size),
-      shape=1,
-      data=more.scores)+
-    facet_grid(. ~ test.group, labeller=label_both, scales="free")+
-    scale_x_continuous(
-      "Percent prediction error on CV test group (one dot for each of 10 folds in CV)")+
-    scale_y_discrete(
-      "Train groups")
   more.stats <- dcast(
     more.scores,
     train.size + n.train.atoms + train.groups + train.groups.N.fac + test.group ~ .,
     list(mean, sd, length),
     value.var="percent.error")
-  ggplot()+
-    tit+
-    theme_bw()+
-    theme(
-      ##panel.spacing=grid::unit(0, "lines"),
-      axis.text.x=element_text(angle=30, hjust=1))+
-    geom_point(aes(
-      percent.error_mean, n.train.atoms, color=train.size),
-      shape=1,
-      data=more.stats)+
-    geom_segment(aes(
-      percent.error_mean+percent.error_sd, n.train.atoms,
-      color=train.size,
-      xend=percent.error_mean-percent.error_sd, yend=n.train.atoms),
-      linewidth=1,
-      data=more.stats)+
-    facet_grid(
-      train.groups ~ test.group,
-      scales="free",
-      labeller=label_both)+
-    scale_x_continuous(
-      "Percent prediction error on test set\n(mean +/- SD over 10 folds and 3 random seeds)")
-  n.test <- length(unique(score.stats$test.group))
-  out.png <- sprintf(
-    "data_Classif_figures/%s_error_mean_sd_more_panels.png",
-    data.name)
-  png(out.png, height=6, width=(n.test+1)*1.5, units="in", res=200)
-  print(gg)
-  dev.off()
   more.min.max.dt <- dcast(
     more.scores,
     test.group ~ .,
@@ -266,14 +235,15 @@ for(data.name in names(data.list)){
       full="black",
       reduced="red"))+
     scale_x_continuous(
-      "Percent prediction error on test set\n(mean +/- SD over 10 folds and 3 random seeds)")
+      "Percent prediction error on test set\n(mean±SD over 10 folds and 3 random seeds)")
   out.png <- sprintf(
-    "data_Classif_figures/%s_error_mean_sd_more.png",
+    "data_Classif_figures/%s_error_glmnet_sizes_mean_sd_more.png",
     data.name)
   max.ticks <- more.stats[, .(ticks=.N), by=test.group][, max(ticks)]
   png(out.png, height=1.5+max.ticks/3, width=(n.test+1)*2.5, units="in", res=200)
   print(gg)
   dev.off()
 }
-##system("cd /projects/genomic-ml && unpublish_data cv-same-other-paper && publish_data projects/cv-same-other-paper")
+system("cd /projects/genomic-ml && unpublish_data cv-same-other-paper && publish_data projects/cv-same-other-paper")
+
 system("firefox data_Classif_figures/*more.png")
