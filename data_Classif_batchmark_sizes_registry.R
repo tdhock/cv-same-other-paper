@@ -5,9 +5,9 @@ reg.csv <- file.path(work.dir, "data_Classif_batchmark_sizes_registry.csv")
 score.dt <- fread(reg.csv)
 
 meta.dt <- data.table::fread("data-meta.csv")[
-  grepl("train|test",small_group), `:=`(
-    test=ifelse(small_group=="test", small_N, large_N),
-    train=ifelse(small_group=="train", small_N, large_N)
+  grepl("train|test",group.small.name), `:=`(
+    test=ifelse(group.small.name=="test", group.small.N, group.large.N),
+    train=ifelse(group.small.name=="train", group.small.N, group.large.N)
   )
 ][
 , `test%` := as.integer(100*test/rows)
@@ -142,7 +142,7 @@ for(data.name in names(data.list)){
       scales="free",
       labeller=label_both)+
     scale_x_continuous(
-      "Percent prediction error on test set\nmean±SD over 10 folds/3 random seeds\npaired t-test in red")
+      "Percent prediction error of cv_glmnet on test set\nmean±SD over 10 folds/3 random seeds\npaired t-test in red")
   n.test <- length(unique(score.stats$test.group))
   out.png <- sprintf(
     "data_Classif_figures/%s_error_glmnet_sizes_mean_SD_pvalue.png",
@@ -235,7 +235,7 @@ for(data.name in names(data.list)){
       full="black",
       reduced="red"))+
     scale_x_continuous(
-      "Percent prediction error on test set\n(mean±SD over 10 folds and 3 random seeds)")
+      "Percent prediction error of cv_glmnet on test set\n(mean±SD over 10 folds and 3 random seeds)")
   out.png <- sprintf(
     "data_Classif_figures/%s_error_glmnet_sizes_mean_sd_more.png",
     data.name)
