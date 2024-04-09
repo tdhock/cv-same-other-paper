@@ -199,8 +199,6 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \item It is important to use several train/test splits, so we can
     see if there are statistically significant differences between
     algorithms.
-  \item Rows/observations are people, inputs/features are survey
-    questions, and output/label is Autism response (Yes or No).
   \end{itemize}
 
   \includegraphics[width=\textwidth]{drawing-cross-validation.pdf}
@@ -208,6 +206,27 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \small Hocking TD \emph{Intro. to machine learning and neural
     networks} (2022).
 \end{frame}
+
+\begin{frame}
+  \frametitle{Example data set: predicting childhood autism}
+
+  \begin{itemize}
+  \item Downloaded National Survey of Children's Health (NSCH) data,
+    years 2019 and 2020, from
+    \url{http://www2.census.gov/programs-surveys/nsch}
+  \item One row per person, one column per survey question.
+  \item Pre-processing to obtain common columns over the two years,
+    remove missing values, one-hot/dummy variable encoding.
+  \item Result is $N=46,010$ rows and $D=366$ columns.
+  \item 18,202 rows for 2019; 27,808 rows for 2020.
+  \item One column is diagnosis with Autism (binary
+    classification, yes or no), can we predict it using the others?
+  \item Can we combine data from different years?
+  \item Can we train on one year, and accurately predict on another?
+  \end{itemize}
+
+\end{frame} 
+
 
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
@@ -220,7 +239,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Train group same as test (=regular $K$-fold CV on 2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-2.pdf}
 \end{frame}
@@ -228,7 +247,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Train group (2019) different from test (2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-3.pdf}
 \end{frame}
@@ -236,7 +255,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Repeat for each of $K$ folds, and each test group (2019,2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-4.pdf}
 \end{frame}
@@ -257,7 +276,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \begin{description}
   \item[Same] should be most accurate.
   \item[Other] should be substantially less accurate.
-  \item[All] accuracy between same and other.
+  \item[All] accuracy should be between same and other.
   \end{description}
 \end{frame}
 
@@ -265,8 +284,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 
 \begin{frame}
   \frametitle{Learning algorithms we consider}
-  We use R packages that implement the following learning
-  algorithms, in the mlr3 R package framework:
+  We used the following learning algorithms:
 \begin{description}
 \item[cv\_glmnet] L1-regularized linear model (feature
   selection). Friedman, \emph{et al.} (2010).
@@ -285,9 +303,9 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   % Neighbors_. R package version 1.3.1,
   % <https://CRAN.R-project.org/package=kknn>.
 \item[featureless] un-informed baseline, ignores all inputs/features,
-  and always predicts the most frequent label in train data (Autism=No
-  in our case). Nomenclature from mlr3 R package, Lang, \emph{et al.},
-  (2019).
+  and always predicts the most frequent label in train data. For
+  example, Autism=No. Nomenclature from mlr3 R package,
+  Lang, \emph{et al.}, (2019).
   % Lang M, Binder M, Richter J, Schratz P, Pfisterer F, Coors S, Au Q,
   % Casalicchio G, Kotthoff L, Bischl B (2019). “mlr3: A modern
   % object-oriented machine learning framework in R.” _Journal of Open
@@ -300,7 +318,7 @@ selection, etc). For details see Hastie, {\it et al.} (2009) textbook.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Summarize 10 folds with mean and standard deviation}
+  \frametitle{$K$-fold CV on NSCH data (predict autism), year 2020}
   \includegraphics[width=\textwidth]{download-nsch-mlr3batchmark-registry-one-set-all-features-stats.png}
 
 Learning algorithms we consider:
@@ -311,14 +329,15 @@ Learning algorithms we consider:
 \item[nearest\_neighbors] classic non-linear algorithm.
 \item[featureless] un-informed baseline, ignores all inputs/features,
   and always predicts the most frequent label in train data (Autism=No
-  in our case).
+  in this case).
 \end{description}
 
 \end{frame}
 
 \begin{frame}
   \frametitle{Same Other for Autism data}
-  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_featureless.png}
+  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_featureless_mean_SD.png}
+  
 \end{frame}
 
 \begin{frame}
