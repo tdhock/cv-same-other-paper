@@ -1,3 +1,46 @@
+** 9 Apr 2024
+
+[[file:slides/]] contains files for making presentation slides.
+
+- [[file:slides/HOCKING-cv-same-other-slides.tex]]
+- [[file:slides/HOCKING-cv-same-other-slides.pdf]]
+
+Title: Same versus Other Cross-Validation for comparing models trained
+on different groups of data
+
+Abstract: cross-validation is an essential algorithm in any machine
+learning analysis. Standard K-Fold cross-validation is useful for
+comparing different algorithms on a single data set. We propose a new
+variant, Same versus Other cross-validation, which can be used to
+determine the extent to which you can get accurate predictions, by
+training on some different data subset/group (person, image,
+geographic region, year, etc). We discuss applications to several
+benchmark and real-world data sets, including predicting childhood
+autism, carbon emissions, and presence of objects in images.
+
+Implementation tutorials:
+
+- [[https://tdhock.github.io/blog/2024/when-is-all-better-than-same/][When is it useful to train with combined groups?]] in R, most
+  recommended, shows how to use my mlr3resampling package.
+
+Older tutorials that show how to implement same/other cross-validation
+without my mlr3resampling package:
+  
+- [[https://tdhock.github.io/blog/2023/R-gen-new-subsets/][Generalization to new subsets in R]]
+- [[https://tdhock.github.io/blog/2022/generalization-to-new-subsets/][Generalization to new subsets]] (in python)
+
+Tutorials about how to run machine learning experiments in parallel:
+  
+- [[https://tdhock.github.io/blog/2022/cross-validation-cluster/][Cross-validation experiments on the cluster]] (in python)
+- [[https://tdhock.github.io/blog/2024/hyper-parameter-tuning/][The importance of hyper-parameter tuning]] explains how to use
+  =mlr3batchmark= and =batchtools= R packages to parallelize machine
+  learning experiments.
+
+Introductions to cluster computing on NAU monsoon:
+
+- [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
+- [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
+
 ** 4 Apr 2024
 
 [[file:data_Classif_simulation.R]] makes
