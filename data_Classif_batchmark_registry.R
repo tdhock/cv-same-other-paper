@@ -185,7 +185,7 @@ for(meta.i in 1:nrow(meta.not.tt)){
         data=join.wide)+
       facet_grid(. ~ test.group + group.rows, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "Percent error of cv_glmnet on CV test group (mean±SD over 10 folds in CV)")+
+        "Percent error on CV test group (mean±SD over 10 folds in CV)")+
       scale_y_discrete(
         "Train groups")
     out.png <- sprintf(
