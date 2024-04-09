@@ -5,9 +5,9 @@ reg.RData <- file.path(work.dir, "data_Classif_batchmark_registry.RData")
 (objs=load(reg.RData))
 
 meta.dt <- data.table::fread("data-meta.csv")[
-  grepl("train|test",small_group), `:=`(
-    test=ifelse(small_group=="test", small_N, large_N),
-    train=ifelse(small_group=="train", small_N, large_N)
+  grepl("train|test",group.small.name), `:=`(
+    test=ifelse(group.small.name=="test", group.small.N, group.large.N),
+    train=ifelse(group.small.name=="train", group.small.N, group.large.N)
   )
 ][
 , `test%` := as.integer(100*test/rows)
@@ -33,7 +33,7 @@ if(FALSE){
 score.join <- meta.dt[score.atomic, on="data.name"]
 
 tt.join <- score.join[
-  grepl("train|test",small_group)
+  grepl("train|test",group.small.name)
 ][
 , predefined.set := test.group
 ][]
@@ -160,6 +160,36 @@ for(meta.i in 1:nrow(meta.not.tt)){
         "Train groups")
     out.png <- sprintf(
       "data_Classif_figures/%s_error_glmnet_featureless.png",
+      meta.row$data.name)
+    png(out.png, width=8, height=2, units="in", res=200)
+    print(gg)
+    dev.off()
+    scores.wide <- dcast(
+      scores.not,
+      algorithm + data.name + train.groups + test.group ~ .,
+      list(mean, sd),
+      value.var="percent.error")
+    join.wide <- group.meta[scores.wide, on=.(data.name, test.group)]
+    gg <- ggplot()+
+      theme_bw()+
+      theme(axis.text.x=element_text(angle=30, hjust=1))+
+      ggtitle(paste("Data set:", meta.row$data.name))+
+      geom_point(aes(
+        percent.error_mean, train.groups, color=algorithm),
+        shape=1,
+        data=join.wide)+
+      geom_segment(aes(
+        percent.error_mean-percent.error_sd, train.groups,
+        color=algorithm,
+        xend=percent.error_mean+percent.error_sd, yend=train.groups),
+        data=join.wide)+
+      facet_grid(. ~ test.group + group.rows, labeller=label_both, scales="free")+
+      scale_x_continuous(
+        "Percent error of cv_glmnet on CV test group (mean±SD over 10 folds in CV)")+
+      scale_y_discrete(
+        "Train groups")
+    out.png <- sprintf(
+      "data_Classif_figures/%s_error_glmnet_featureless_mean_SD.png",
       meta.row$data.name)
     png(out.png, width=8, height=2, units="in", res=200)
     print(gg)
