@@ -66,6 +66,7 @@ nc::capture_first_df(
   FishSonar,
   imgID=ymd.pattern)
 FishSonar[, y := ifelse(label_name=="Hard Bottom", "hard", "other")]
+FishSonar[, table(label=y, river)]
 name.vec <- c("river", "y", grep("mean", names(FishSonar), value=TRUE))
 out.dt <- FishSonar[, name.vec, with=FALSE]
 fwrite(out.dt, "data_Classif/FishSonar_river.csv")
