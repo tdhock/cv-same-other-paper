@@ -566,32 +566,80 @@ label      BOU    CHI    LEA    PRL
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for STL10 data}
-  \includegraphics[width=\textwidth]{STL10_error_glmnet_featureless_mean_SD.png}
+  \frametitle{Same Other CV for vowel data}
+  \includegraphics[width=\textwidth]{vowel_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
   \item TODO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for STL10 data}
-  \includegraphics[width=\textwidth]{STL10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \frametitle{Same Other CV for vowel data}
+  \includegraphics[width=\textwidth]{vowel_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
   \item TODO
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for CIFAR10 data}
-  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_featureless_mean_SD.png}
+  \frametitle{Same Other CV for KMNIST data}
+  \includegraphics[width=\textwidth]{KMNIST_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
   \item TODO
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for CIFAR10 data}
-  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \frametitle{Same Other CV for KMNIST data}
+  \includegraphics[width=\textwidth]{KMNIST_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Train on MNIST and accurately predict on EMNIST?}
+
+  Recall: what happens if you do
+  $g(\includegraphics[height=1cm]{fashion-mnist-boot})$, or
+  $h(\includegraphics[height=1cm]{mnist-0})$?
+  
+  \begin{itemize}
+  \item Boot image comes from FashionMNIST data, which were used to learn $h$.
+  \item 0 image comes from MNIST data, which were used to learn $g$.
+  \end{itemize}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_1.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+FashionMNIST data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_FashionMNIST.png}
+  
+  \includegraphics[width=\textwidth]{MNIST_FashionMNIST_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+EMNIST data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST.png}
+  
+  \includegraphics[width=\textwidth]{MNIST_EMNIST_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+EMNIST\_rot data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST_rot.png}
+  
+  %\includegraphics[width=\textwidth]{MNIST_EMNIST_rot_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
   \item TODO
   \end{itemize}
@@ -647,6 +695,38 @@ label      BOU    CHI    LEA    PRL
     for imbalanced binary classification problems (constant/featureless=0.5, best=1).
   \item Test AUC for all is never as large as same, indicating that
     you need data from the same river for optimal prediction accuracy.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for STL10 data}
+  \includegraphics[width=\textwidth]{STL10_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for STL10 data}
+  \includegraphics[width=\textwidth]{STL10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for CIFAR10 data}
+  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for CIFAR10 data}
+  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
   \end{itemize}
 \end{frame}
 
