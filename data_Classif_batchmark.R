@@ -51,7 +51,7 @@ mlr3batchmark::batchmark(
 (job.table <- batchtools::getJobTable(reg=reg))
 chunks <- data.frame(job.table, chunk=1)
 batchtools::submitJobs(chunks, resources=list(
-  walltime = 24*60*60,#seconds
+  walltime = 48*60*60,#seconds
   memory = 64000,#megabytes per cpu
   ncpus=1,  #>1 for multicore/parallel jobs.
   ntasks=1, #>1 for MPI jobs.
