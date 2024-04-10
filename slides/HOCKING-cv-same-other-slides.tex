@@ -534,66 +534,87 @@ label      BOU    CHI    LEA    PRL
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for MNIST data}
+  \frametitle{Same Other CV for MNIST data (example 1)}
   \includegraphics[width=\textwidth]{MNIST_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item MNIST data are images of handwritten digits (10 classes).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for MNIST data}
+  \frametitle{Same Other CV for MNIST data (example 1)}
   \includegraphics[width=\textwidth]{MNIST_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item When predicting on predefined test set, all has significantly
+    lower test error than same, so it is beneficial to combine data
+    (similar pattern, not enough data in small test set).
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for spam data}
+  \frametitle{Same Other CV for spam data (example 2)}
   \includegraphics[width=\textwidth]{spam_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item spam data are emails (binary classification).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for spam data}
+  \frametitle{Same Other CV for spam data (example 2)}
   \includegraphics[width=\textwidth]{spam_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item train.groups=all has significantly
+    lower test error than same, so it is beneficial to combine data
+    (similar pattern, not enough data in either predefined set).
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for vowel data}
+  \frametitle{Same Other CV for vowel data (example 3)}
   \includegraphics[width=\textwidth]{vowel_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+%    data.name memory.kb  rows n.groups          group.tab group.small.name
+%       <char>     <int> <int>    <int>             <char>           <char>
+% 1:     vowel        92   990        2 test=462;train=528             test
+%    group.small.N group.large.name group.large.N label.small.name label.small.N
+%            <int>           <char>         <int>           <char>         <int>
+% 1:           462            train           528                1            90
+%    label.large.name label.large.N features classes min.rows  test train test%
+%              <char>         <int>    <int>   <int>    <int> <int> <int> <int>
+% 1:               11            90       10      11       42   462   528    46
+  \item vowel data are audio/speech recordings (11 classes/speakers).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for vowel data}
+  \frametitle{Same Other CV for vowel data (example 3)}
   \includegraphics[width=\textwidth]{vowel_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item train.groups=all has significantly larger test error than
+    same, indicating that it is not optimal to combine the
+    predefined sets (which have different patterns). 
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Same Other CV for KMNIST data}
+  \frametitle{Same Other CV for KMNIST data (example 4)}
   \includegraphics[width=\textwidth]{KMNIST_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item KMNIST are images of handwritten Japanese (10 classes).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for KMNIST data}
+  \frametitle{Same Other CV for KMNIST data (example 4)}
   \includegraphics[width=\textwidth]{KMNIST_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item train.groups=all has significantly larger test error than
+    same, indicating that it is not optimal to combine the
+    predefined sets (which have different patterns). 
   \end{itemize}
 \end{frame}
 
@@ -619,7 +640,9 @@ label      BOU    CHI    LEA    PRL
   
   \includegraphics[width=\textwidth]{MNIST_FashionMNIST_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item Other linear model has more test error than featureless, which
+    indicates that the patterns are too different to learn anything at
+    all.
   \end{itemize}
 \end{frame}
 
@@ -630,7 +653,9 @@ label      BOU    CHI    LEA    PRL
   
   \includegraphics[width=\textwidth]{MNIST_EMNIST_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item Other has somewhat smaller test error than featureless, so
+    something is learned/transferable between data sets, but it is
+    still clear that the pattern is very different.
   \end{itemize}
 \end{frame}
 
@@ -650,13 +675,15 @@ label      BOU    CHI    LEA    PRL
 \begin{frame}
   \frametitle{Discussion and Conclusions}
   \begin{itemize}
-  \item Proposed Same Other Cross-Validation can be used to see if
+  \item Proposed Same Other Cross-Validation shows if
     data sets are similar enough to so that combining data is
-    beneficial for training (train on one group, test/predict on
+    beneficial for learning (train on one group, test/predict on
     another).
   \item In Autism data, there was a slight benefit to combining years.
-  \item In image classification data (fires/trees/fish), we observed
+  \item In fires/trees/fish data, we observed
     significant differences between images/regions/rivers.
+  \item Some pre-defined train/test splits in benchmark data sets
+    are similar/iid (MNIST/spam), others are not (KMNIST/vowel).
   \item Free/open-source R package available:
     \url{https://github.com/tdhock/mlr3resampling}
   \item These slides are reproducible, using the code in \url{https://github.com/tdhock/cv-same-other-paper}
@@ -702,7 +729,8 @@ label      BOU    CHI    LEA    PRL
   \frametitle{Same Other CV for STL10 data}
   \includegraphics[width=\textwidth]{STL10_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item Image classification data (10 different objects).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
@@ -710,7 +738,9 @@ label      BOU    CHI    LEA    PRL
   \frametitle{Same Other CV for STL10 data}
   \includegraphics[width=\textwidth]{STL10_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item train.groups=all has significantly
+    lower test error than same, so it is beneficial to combine data
+    (similar pattern, not enough data in predefined train set).
   \end{itemize}
 \end{frame}
 
@@ -718,7 +748,8 @@ label      BOU    CHI    LEA    PRL
   \frametitle{Same Other CV for CIFAR10 data}
   \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item TODO
+  \item Image classification data (10 different objects).
+  \item Each linear model has much less error than featureless.
   \end{itemize}
 \end{frame}
 
@@ -726,9 +757,18 @@ label      BOU    CHI    LEA    PRL
   \frametitle{Same Other CV for CIFAR10 data}
   \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_sizes_mean_SD_pvalue.png}
   \begin{itemize}
-  \item TODO
+  \item train.groups=all has significantly
+    lower test error than same, so it is beneficial to combine data
+    (similar pattern, not enough data in predefined test set).
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Scatterplot of similarity and difficulty}
+  %\includegraphics[width=\textwidth]{TODO.png}
+  \begin{itemize}
+  \item TODO draw similarity/difficulty line segments on plot of x=error, y=train.groups 
+  \end{itemize}
+\end{frame}
 
 \end{document}
