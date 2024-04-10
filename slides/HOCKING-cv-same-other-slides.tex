@@ -179,7 +179,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \item Predicting carbon emissions (Aslam \emph{et al.}), train on
     one city, test on another.
   \item Predicting presence of trees/fires in satellite imagery
-    (Shenkin \emph{et al.}, \emph{Thibaut} \emph{et al.}), train on
+    (Shenkin \emph{et al.}, \emph{Thibault} \emph{et al.}), train on
     one geographic area/image, test on another.
   \item Predicting fish spawning habitat in sonar imagery (Bodine
     \emph{et al.}), train on one river, test on another.
@@ -199,8 +199,6 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \item It is important to use several train/test splits, so we can
     see if there are statistically significant differences between
     algorithms.
-  \item Rows/observations are people, inputs/features are survey
-    questions, and output/label is Autism response (Yes or No).
   \end{itemize}
 
   \includegraphics[width=\textwidth]{drawing-cross-validation.pdf}
@@ -208,6 +206,28 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \small Hocking TD \emph{Intro. to machine learning and neural
     networks} (2022).
 \end{frame}
+
+\begin{frame}
+  \frametitle{Example data set: predicting childhood autism}
+
+  \begin{itemize}
+  \item Collaboration with Lindly \emph{et al.}
+  \item Downloaded National Survey of Children's Health (NSCH) data,
+    years 2019 and 2020, from
+    \url{http://www2.census.gov/programs-surveys/nsch}
+  \item One row per person, one column per survey question.
+  \item Pre-processing to obtain common columns over the two years,
+    remove missing values, one-hot/dummy variable encoding.
+  \item Result is $N=46,010$ rows and $D=366$ columns.
+  \item 18,202 rows for 2019; 27,808 rows for 2020.
+  \item One column is diagnosis with Autism (binary
+    classification, yes or no), can we predict it using the others?
+  \item Can we combine data from different years?
+  \item Can we train on one year, and accurately predict on another?
+  \end{itemize}
+
+\end{frame} 
+
 
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
@@ -220,7 +240,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Train group same as test (=regular $K$-fold CV on 2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-2.pdf}
 \end{frame}
@@ -228,7 +248,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Train group (2019) different from test (2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-3.pdf}
 \end{frame}
@@ -236,7 +256,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 \begin{frame}
   \frametitle{Proposed Same Other Cross-Validation}
   \begin{itemize}
-  \item One train/test split shown out of $K$ folds.
+  \item Repeat for each of $K$ folds, and each test group (2019,2020).
   \end{itemize}
   \includegraphics[width=\textwidth]{drawing-cv-same-other-years-4.pdf}
 \end{frame}
@@ -257,7 +277,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   \begin{description}
   \item[Same] should be most accurate.
   \item[Other] should be substantially less accurate.
-  \item[All] accuracy between same and other.
+  \item[All] accuracy should be between same and other.
   \end{description}
 \end{frame}
 
@@ -265,8 +285,7 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
 
 \begin{frame}
   \frametitle{Learning algorithms we consider}
-  We use R packages that implement the following learning
-  algorithms, in the mlr3 R package framework:
+  We used the following learning algorithms:
 \begin{description}
 \item[cv\_glmnet] L1-regularized linear model (feature
   selection). Friedman, \emph{et al.} (2010).
@@ -285,9 +304,9 @@ $X=$\includegraphics[height=1.9in]{mnist-digits}
   % Neighbors_. R package version 1.3.1,
   % <https://CRAN.R-project.org/package=kknn>.
 \item[featureless] un-informed baseline, ignores all inputs/features,
-  and always predicts the most frequent label in train data (Autism=No
-  in our case). Nomenclature from mlr3 R package, Lang, \emph{et al.},
-  (2019).
+  and always predicts the most frequent label in train data. For
+  example, Autism=No. Nomenclature from mlr3 R package,
+  Lang, \emph{et al.}, (2019).
   % Lang M, Binder M, Richter J, Schratz P, Pfisterer F, Coors S, Au Q,
   % Casalicchio G, Kotthoff L, Bischl B (2019). “mlr3: A modern
   % object-oriented machine learning framework in R.” _Journal of Open
@@ -300,7 +319,7 @@ selection, etc). For details see Hastie, {\it et al.} (2009) textbook.
 \end{frame}
 
 \begin{frame}
-  \frametitle{Summarize 10 folds with mean and standard deviation}
+  \frametitle{$K$-fold CV on NSCH data (predict autism), year 2020}
   \includegraphics[width=\textwidth]{download-nsch-mlr3batchmark-registry-one-set-all-features-stats.png}
 
 Learning algorithms we consider:
@@ -311,44 +330,271 @@ Learning algorithms we consider:
 \item[nearest\_neighbors] classic non-linear algorithm.
 \item[featureless] un-informed baseline, ignores all inputs/features,
   and always predicts the most frequent label in train data (Autism=No
-  in our case).
+  in this case).
 \end{description}
 
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other for Autism data}
-  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_featureless.png}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Same Other for Autism data}
-  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_sizes_mean_SD_pvalue.png}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Same Other for Autism data}
-  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_sizes_mean_sd_more.png}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Proposed Same Other Cross-Validation}
-%  \includegraphics[width=\textwidth]{download-nsch-mlr3batchmark-registry-predict-new-year.png}
+  \frametitle{Same Other CV for Autism data}
+  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_featureless_mean_SD.png}
   \begin{itemize}
-  \item 18,202 rows in 2019, whereas 27,808 in 2020.
-  \item For predicting in 2019 (left), training on only 2019 (same) is
-    slightly less accurate than training on only 2020 (other), and
-    2019+2020 (all). This suggests 2020 data are consistent with the
-    pattern in 2019, which is too complex to learn from the limited
-    2019 data alone (there is a slight advantage to combining years
-    when training).
-  \item For predicting in 2020 (right), training on 2019 (other) is slightly less accurate than training on 2020 (same), and 2019+2020 (all). This again suggests that 2019/2020 data are consistent, but there are not enough data in 2019 alone.
+  \item Each cv\_glmnet model has significantly less error than
+    featureless, indicating that some non-trivial pattern has been
+    learned.
   \end{itemize}
-% > out.dt[, table(survey_year)]
-% survey_year
-%  2019  2020 
-% 18202 27808 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for Autism data}
+  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_sizes_mean_SD_pvalue.png}
+  
+  \vskip -0.4cm
+  
+  \begin{itemize}
+  \item All has slightly less error than same, which suggests the
+    two years have similar patterns, and can be combined for learning
+    a more accurate model.
+  \item Other has either less error or more, suggesting that the error
+    rate depends on the number of rows in the train set.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example data 2: Canada fires}
+% > meta.dt[data.name=="CanadaFires_all"]
+%          data.name memory.kb  rows n.groups                         group.tab
+%             <char>     <int> <int>    <int>                            <char>
+% 1: CanadaFires_all      1122  4827        4 306=364;329=755;395=1170;326=2538
+%    group.small.name group.small.N group.large.name group.large.N
+%              <char>         <int>           <char>         <int>
+% 1:              306           364              326          2538
+%    label.small.name label.small.N label.large.name label.large.N features
+%              <char>         <int>           <char>         <int>    <int>
+% 1:           burned          1629          no burn          3198       46
+%    classes min.rows  test train test%
+%      <int>    <int> <int> <int> <int>
+% 1:       2      140    NA    NA    NA  
+  \begin{itemize}
+  \item Collaboration with Thibault \emph{et al.}
+  \item Satellite image data, $N=4827$ rows/pixels, $D=46$
+    features/spectral bands.
+  \item Government land management project: oal is to predict whether
+    the pixel has been burned (binary classification, yes or no).
+  \item Four satellite images in different regions of the forest,
+    numbered 306, 326, 329, 395.
+  \item Can we train on one image, and accurately predict on another?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for Canada fires data}
+  \includegraphics[width=\textwidth]{CanadaFires_all_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item Each cv\_glmnet model has significantly less error than
+    featureless, except train.groups=other for test.group=395 (must
+    have a very different pattern than the other images).
+  \item Training on all images is never as accurate as same, which
+    suggests that images are substantially different, and we need
+    labels from the same image to get optimal predictions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example data 3: AZ trees}
+% > meta.dt[data.name=="aztrees3"]
+%    data.name memory.kb  rows n.groups              group.tab group.small.name
+%       <char>     <int> <int>    <int>                 <char>           <char>
+% 1:  aztrees3       587  5956        3 NE=1464;NW=1563;S=2929               NE
+%    group.small.N group.large.name group.large.N label.small.name label.small.N
+%            <int>           <char>         <int>           <char>         <int>
+% 1:          1464                S          2929         Not tree          5282
+%    label.large.name label.large.N features classes min.rows  test train test%
+%              <char>         <int>    <int>   <int>    <int> <int> <int> <int>
+% 1:             Tree           674       21       2       55    NA    NA    NA
+  \begin{itemize}
+  \item Collaboration with Shenkin \emph{et al.}
+  \item Satellite image data, $N=5956$ rows/pixels, $D=21$
+    features/spectral bands.
+  \item Tree stress project: goal is to predict whether the pixel has
+    a tree (binary classification, yes or no).
+  \item Three regions around Flagstaff: NE, NW, S.
+  \item Can we train in one region, and accurately predict on another?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for AZ trees data}
+  \includegraphics[width=\textwidth]{aztrees3_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item Each cv\_glmnet model has significantly less error than
+    featureless, except train.groups=other for two test groups (must
+    have a very different pattern than the other images).
+  \item Training on all images is never as accurate as same, which
+    suggests that images are substantially different, and we need
+    labels from the same image to get optimal predictions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example data 4: fish sonar}
+% > meta.dt[data.name=="FishSonar_river"]
+%          data.name memory.kb    rows n.groups
+%             <char>     <int>   <int>    <int>
+% 1: FishSonar_river    934937 2815744        4
+%                                      group.tab group.small.name group.small.N
+%                                         <char>           <char>         <int>
+% 1: CHI=638475;PRL=667201;LEA=739745;BOU=770323              CHI        638475
+%    group.large.name group.large.N label.small.name label.small.N
+%              <char>         <int>           <char>         <int>
+% 1:              BOU        770323             hard        677258
+%    label.large.name label.large.N features classes min.rows  test train test%
+%              <char>         <int>    <int>   <int>    <int> <int> <int> <int>
+% 1:            other       2138486       81       2   113592    NA    NA    NA
+  \begin{itemize}
+  \item Collaboration with Bodine \emph{et al.}
+  \item Sonar image data, $N=2,815,744$ rows/pixels, $D=81$
+    features (mean pixel intesity in windows around target pixel).
+  \item Conservation project funded by Department of Fish/Wildlife:
+    goal is to predict whether the pixel has a hard bottom suitable
+    for fish spawning (binary classification, yes or no).
+  \item Four rivers in southeast USA: CHI, PRL, LEA, BOU.
+  \item Can we train in one river, and accurately predict on another?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for fish sonar data}
+  \includegraphics[width=\textwidth]{FishSonar_river_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item When training on same group, cv\_glmnet sometimes has larger
+    test error than featureless, because of class imbalance (hard
+    bottom suitable for fish spawning is rare).
+  \end{itemize}
+\begin{verbatim}
+       river
+label      BOU    CHI    LEA    PRL
+  hard  113592 182150 171684 209832
+  other 656731 456325 568061 457369
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for fish sonar data}
+  \includegraphics[width=\textwidth]{FishSonar_river_AUC_glmnet_mean_SD.png}
+  \begin{itemize}
+  \item Area Under the ROC Curve (AUC) is a good measure of accuracy
+    for imbalanced binary classification problems (constant/featureless=0.5, best=1).
+  \item Mostly test AUC is greater than 0.5, which means a non-trivial
+    prediction function has been learned.
+  \item For test.group=CHI with train.groups=all/other, test
+    AUC$<0.5$, indicating a very different pattern in this river
+    (opposite of the pattern in other rivers).
+  \item Test AUC for all is never as large as same, indicating that
+    you need data from the same river for optimal prediction accuracy.
+  \end{itemize}
+\end{frame}
+
+\section{Results on machine learning benchmark data sets}
+
+\begin{frame}
+  \frametitle{Machine learning benchmark data sets}
+  \begin{itemize}
+  \item Machine learning researchers evaluate new algorithms using
+    benchmark data sets, which sometimes have pre-defined train/test
+    splits.
+% > meta.dt[data.name=="MNIST"]
+%    data.name memory.kb  rows n.groups              group.tab group.small.name
+%       <char>     <int> <int>    <int>                 <char>           <char>
+% 1:     MNIST    429712 70000        2 test=10000;train=60000             test
+%    group.small.N group.large.name group.large.N label.small.name label.small.N
+%            <int>           <char>         <int>           <char>         <int>
+% 1:         10000            train         60000                0          6903
+%    label.large.name label.large.N features classes min.rows  test train test%
+%              <char>         <int>    <int>   <int>    <int> <int> <int> <int>
+% 1:                9          6958      784      10      892 10000 60000    14 
+  \item For example MNIST is a data set of images of handwritten
+    digits (want to predict which digit, 0 to 9), with 60,000 train
+    and 10,000 test images.
+% > meta.dt[data.name=="spam"]
+%    data.name memory.kb  rows n.groups            group.tab group.small.name
+%       <char>     <int> <int>    <int>               <char>           <char>
+% 1:      spam      2078  4601        2 test=1536;train=3065             test
+%    group.small.N group.large.name group.large.N label.small.name label.small.N
+%            <int>           <char>         <int>           <char>         <int>
+% 1:          1536            train          3065                0          2788
+%    label.large.name label.large.N features classes min.rows  test train test%
+%              <char>         <int>    <int>   <int>    <int> <int> <int> <int>
+% 1:                1          1813       57       2      595  1536  3065    33
+  \item spam is a data set of emails (want to predict spam or not,
+    binary), with 3065 train and 1536 test emails.
+  \item Are the patterns in the pre-defined train/test sets similar/iid? 
+  \item Or are they different? 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for MNIST data}
+  \includegraphics[width=\textwidth]{MNIST_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST data}
+  \includegraphics[width=\textwidth]{MNIST_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for spam data}
+  \includegraphics[width=\textwidth]{spam_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for spam data}
+  \includegraphics[width=\textwidth]{spam_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for STL10 data}
+  \includegraphics[width=\textwidth]{STL10_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for STL10 data}
+  \includegraphics[width=\textwidth]{STL10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Same Other CV for CIFAR10 data}
+  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for CIFAR10 data}
+  \includegraphics[width=\textwidth]{CIFAR10_error_glmnet_sizes_mean_SD_pvalue.png}
+  \begin{itemize}
+  \item TODO
+  \end{itemize}
 \end{frame}
 
 \section{Discussion and Conclusions}
@@ -356,15 +602,53 @@ Learning algorithms we consider:
 \begin{frame}
   \frametitle{Discussion and Conclusions}
   \begin{itemize}
-  \item Proposed Same Other Cross-Validation can be used to see if it
-    is beneficial to learn using data from different groups (train on
-    one group, test/predict on another).
-  \item Free/open-source software available: mlr3resampling R package
-    on \url{https://github.com/tdhock/mlr3resampling}.
+  \item Proposed Same Other Cross-Validation can be used to see if
+    data sets are similar enough to so that combining data is
+    beneficial for training (train on one group, test/predict on
+    another).
+  \item In Autism data, there was a slight benefit to combining years.
+  \item In image classification data (fires/trees/fish), we observed
+    significant differences between images/regions/rivers.
+  \item Free/open-source R package available:
+    \url{https://github.com/tdhock/mlr3resampling}
   \item These slides are reproducible, using the code in \url{https://github.com/tdhock/cv-same-other-paper}
   \item Contact: toby.hocking@nau.edu,
     toby.hocking@r-project.org
   \end{itemize}
 \end{frame}
+
+\section{Supplementary slides}
+
+\begin{frame}
+  \frametitle{Same Other CV for Autism data}
+  \includegraphics[width=\textwidth]{NSCH_autism_error_glmnet_sizes_mean_sd_more.png}
+  \begin{itemize}
+  \item Reduced sizes (red) are used to judge the effect of sample size.
+  \item Sample size effect present for test group 2020, but not 2019.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for Canada fires data}
+  \includegraphics[width=\textwidth]{CanadaFires_all_AUC_glmnet_mean_SD.png}
+  \begin{itemize}
+  \item Area Under the ROC Curve (AUC) is a good measure of accuracy
+    for imbalanced binary classification problems (constant/featureless=0.5, best=1).
+  \item Test AUC for all is never as large as same, indicating that
+    you need data from the same river for optimal prediction accuracy.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for AZ trees data}
+  \includegraphics[width=\textwidth]{AZtrees3_AUC_glmnet_mean_SD.png}
+  \begin{itemize}
+  \item Area Under the ROC Curve (AUC) is a good measure of accuracy
+    for imbalanced binary classification problems (constant/featureless=0.5, best=1).
+  \item Test AUC for all is never as large as same, indicating that
+    you need data from the same river for optimal prediction accuracy.
+  \end{itemize}
+\end{frame}
+
 
 \end{document}

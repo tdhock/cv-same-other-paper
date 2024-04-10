@@ -18,6 +18,9 @@ geographic region, year, etc). We discuss applications to several
 benchmark and real-world data sets, including predicting childhood
 autism, carbon emissions, and presence of objects in images.
 
+Textbook chapter with an explanation of cross-validation: [[https://raw.githubusercontent.com/tdhock/2020-yiqi-summer-school/master/HOCKING-chapter.pdf][Introduction
+to Machine Learning and Neural Networks]].
+
 Implementation tutorials:
 
 - [[https://tdhock.github.io/blog/2024/when-is-all-better-than-same/][When is it useful to train with combined groups?]] in R, most
