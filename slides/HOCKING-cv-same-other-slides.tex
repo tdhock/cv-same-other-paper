@@ -670,7 +670,22 @@ label      BOU    CHI    LEA    PRL
   \end{itemize}
 \end{frame}
 
-\section{Discussion and Conclusions}
+\section{Synthesis, Discussion and Conclusions}
+
+\begin{frame}
+  \frametitle{Map of data set sub-group similarity}
+  \includegraphics[width=\textwidth]{data_Classif_batchmark_registry_scatter_other_all.png}
+  \begin{itemize}
+  \item Overview of how similar/different are sub-groups in each data set. (Data sets with similar sub-groups appear in lower left.)
+  \item Mean difference in percent test error, all/other-same, is
+    shown for each data set.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Zoom to most similar data sets}
+  \includegraphics[width=0.9\textheight]{data_Classif_batchmark_registry_scatter_other_all_similar.png}
+\end{frame}
 
 \begin{frame}
   \frametitle{Discussion and Conclusions}
@@ -760,14 +775,6 @@ label      BOU    CHI    LEA    PRL
   \item train.groups=all has significantly
     lower test error than same, so it is beneficial to combine data
     (similar pattern, not enough data in predefined test set).
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Scatterplot of similarity and difficulty}
-  %\includegraphics[width=\textwidth]{TODO.png}
-  \begin{itemize}
-  \item TODO draw similarity/difficulty line segments on plot of x=error, y=train.groups 
   \end{itemize}
 \end{frame}
 
