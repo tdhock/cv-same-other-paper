@@ -32,6 +32,65 @@ if(FALSE){
 }
 score.join <- meta.dt[score.atomic, on="data.name"]
 
+(tab.wide <- dcast(
+  score.join[algorithm=="cv_glmnet"],
+  data.name + test.group + test.fold ~ train.groups,
+  value.var="percent.error"))
+(tab.long <- melt(
+  tab.wide,
+  measure=c("other","all"),
+  variable.name="compare_name",
+  value.name="compare_error"
+)[, {
+  test.res <- t.test(compare_error, same, paired=TRUE)
+  with(test.res, data.table(estimate, p.value))
+}, by=.(data.name,test.group,compare_name)])
+
+(compare.wide.each <- dcast(
+  tab.long,
+  data.name + test.group ~ compare_name,
+  value.var="estimate"))
+ggplot()+
+  geom_point(aes(
+    other, all, color=data.name),
+    data=compare.wide.each)
+
+(compare.wide <- dcast(
+  tab.long,
+  data.name ~ compare_name,
+  mean,
+  value.var="estimate"))
+gg <- ggplot()+
+  theme_bw()+
+  geom_hline(yintercept=0,color="grey")+
+  geom_vline(xintercept=0,color="grey")+
+  geom_point(aes(
+    other, all, color=data.name),
+    data=compare.wide)+
+  ggrepel::geom_label_repel(aes(
+    other, all, color=data.name, label=data.name),
+    data=compare.wide)+
+  coord_equal()+
+  theme(legend.position="none")+
+  scale_x_continuous(
+    "Other-Same, mean percent error, over 10 test folds and all test groups")+
+  scale_y_continuous(
+    "All-Same, mean percent error,\nover 10 test folds and all test groups")
+png("data_Classif_batchmark_registry_scatter_other_all.png", width=7, height=3.5, units="in", res=200)
+print(gg)
+dev.off()
+zoom <- gg+
+  scale_x_continuous(
+    "Other-Same (mean percent error over 10 test folds and all test groups)",
+    limits=c(-1, 1))+
+  scale_y_continuous(
+    "All-Same (mean percent error over 10 test folds and all test groups)",
+    limits=c(-2.5, 0))
+png("data_Classif_batchmark_registry_scatter_other_all_similar.png", width=6, height=6, units="in", res=200)
+print(zoom)
+dev.off()
+    
+
 tt.join <- score.join[
   grepl("train|test",group.small.name)
 ][
