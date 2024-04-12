@@ -498,6 +498,59 @@ label      BOU    CHI    LEA    PRL
 \section{Results on machine learning benchmark data sets}
 
 \begin{frame}
+  \frametitle{Train on MNIST and accurately predict on EMNIST?}
+
+  Recall: what happens if you do
+  $g(\includegraphics[height=1cm]{fashion-mnist-boot})$, or
+  $h(\includegraphics[height=1cm]{mnist-0})$?
+  
+  \begin{itemize}
+  \item Boot image comes from FashionMNIST data, which were used to learn $h$.
+  \item 0 image comes from MNIST data, which were used to learn $g$.
+  \end{itemize}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_1.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+FashionMNIST data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_FashionMNIST.png}
+  
+  \includegraphics[width=\textwidth]{MNIST_FashionMNIST_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item Other linear model has more test error than featureless, which
+    indicates that the patterns are too different to learn anything at
+    all.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+EMNIST data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST.png}
+  
+  \includegraphics[width=\textwidth]{MNIST_EMNIST_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item Other has somewhat smaller test error than featureless, so
+    something is learned/transferable between data sets, but it is
+    still clear that the pattern is very different.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Same Other CV for MNIST+EMNIST\_rot data}
+
+  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST_rot.png}
+  
+  \includegraphics[width=\textwidth]{MNIST_EMNIST_rot_error_glmnet_featureless_mean_SD.png}
+  \begin{itemize}
+  \item Other still has larger test error than same, indicating some
+    similarity between MNIST and EMNIST\_rot data sets.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
   \frametitle{Machine learning benchmark data sets}
   \begin{itemize}
   \item Machine learning researchers evaluate new algorithms using
@@ -618,59 +671,56 @@ label      BOU    CHI    LEA    PRL
   \end{itemize}
 \end{frame}
 
+\section{Synthesis, Discussion and Conclusions}
+
 \begin{frame}
-  \frametitle{Train on MNIST and accurately predict on EMNIST?}
-
-  Recall: what happens if you do
-  $g(\includegraphics[height=1cm]{fashion-mnist-boot})$, or
-  $h(\includegraphics[height=1cm]{mnist-0})$?
-  
+  \frametitle{Data sets analyzed}
   \begin{itemize}
-  \item Boot image comes from FashionMNIST data, which were used to learn $h$.
-  \item 0 image comes from MNIST data, which were used to learn $g$.
+  \item Sorted by test error difference between other and same.
+  \item Different groups on top/positive.
+  \item Similar groups on bottom/negative.
   \end{itemize}
+  \scriptsize
+\begin{tabular}{rlrrrrr}
+  \hline
+ & data.name & rows & features & classes & n.groups & other-same \\ 
+  \hline
+1 & vowel & 990 &  10 &  11 &   2 & 29.61 \\ 
+  2 & CanadaFires\_all & 4827 &  46 &   2 &   4 & 12.94 \\ 
+  3 & aztrees3 & 5956 &  21 &   2 &   3 & 12.68 \\ 
+  4 & aztrees4 & 5956 &  21 &   2 &   4 & 11.10 \\ 
+  5 & CanadaFires\_downSampled & 1491 &  46 &   2 &   4 & 10.95 \\ 
+  6 & KMNIST & 70000 & 784 &  10 &   2 & 5.62 \\ 
+  7 & FishSonar\_river & 2815744 &  81 &   2 &   4 & 2.13 \\ 
+  8 & FashionMNIST & 70000 & 784 &  10 &   2 & 0.33 \\ 
+  9 & zipUSPS & 9298 & 256 &  10 &   2 & 0.26 \\ 
+  10 & MNIST & 70000 & 784 &  10 &   2 & 0.22 \\ 
+  11 & QMNIST & 120000 & 784 &  10 &   2 & 0.17 \\ 
+  12 & NSCH\_autism & 46010 & 364 &   2 &   2 & 0.08 \\ 
+  13 & CIFAR10 & 60000 & 3072 &  10 &   2 & -0.11 \\ 
+  14 & EMNIST & 70000 & 784 &  10 &   2 & -0.23 \\ 
+  15 & spam & 4601 &  57 &   2 &   2 & -0.36 \\ 
+  16 & STL10 & 13000 & 27648 &  10 &   2 & -0.47 \\ 
+  17 & waveform & 800 &  21 &   3 &   2 & -0.69 \\ 
+   \hline
+\end{tabular}
 
-  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_1.png}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for MNIST+FashionMNIST data}
-
-  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_FashionMNIST.png}
-  
-  \includegraphics[width=\textwidth]{MNIST_FashionMNIST_error_glmnet_featureless_mean_SD.png}
+  \frametitle{Map of data set sub-group similarity}
+  \includegraphics[width=\textwidth]{data_Classif_batchmark_registry_scatter_other_all.png}
   \begin{itemize}
-  \item Other linear model has more test error than featureless, which
-    indicates that the patterns are too different to learn anything at
-    all.
+  \item Overview of how similar/different are sub-groups in each data set. (Data sets with similar sub-groups appear in lower left.)
+  \item Mean difference in percent test error, all/other-same, is
+    shown for each data set.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Same Other CV for MNIST+EMNIST data}
-
-  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST.png}
-  
-  \includegraphics[width=\textwidth]{MNIST_EMNIST_error_glmnet_featureless_mean_SD.png}
-  \begin{itemize}
-  \item Other has somewhat smaller test error than featureless, so
-    something is learned/transferable between data sets, but it is
-    still clear that the pattern is very different.
-  \end{itemize}
+  \frametitle{Zoom to most similar data sets}
+  \includegraphics[width=0.9\textheight]{data_Classif_batchmark_registry_scatter_other_all_similar.png}
 \end{frame}
-
-\begin{frame}
-  \frametitle{Same Other CV for MNIST+EMNIST\_rot data}
-
-  \includegraphics[width=\textwidth]{data_Classif_MNIST_other_EMNIST_rot.png}
-  
-  %\includegraphics[width=\textwidth]{MNIST_EMNIST_rot_error_glmnet_featureless_mean_SD.png}
-  \begin{itemize}
-  \item TODO
-  \end{itemize}
-\end{frame}
-
-\section{Discussion and Conclusions}
 
 \begin{frame}
   \frametitle{Discussion and Conclusions}
@@ -760,14 +810,6 @@ label      BOU    CHI    LEA    PRL
   \item train.groups=all has significantly
     lower test error than same, so it is beneficial to combine data
     (similar pattern, not enough data in predefined test set).
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Scatterplot of similarity and difficulty}
-  %\includegraphics[width=\textwidth]{TODO.png}
-  \begin{itemize}
-  \item TODO draw similarity/difficulty line segments on plot of x=error, y=train.groups 
   \end{itemize}
 \end{frame}
 
