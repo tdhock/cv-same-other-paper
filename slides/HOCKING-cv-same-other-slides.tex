@@ -674,54 +674,88 @@ label      BOU    CHI    LEA    PRL
 \section{Synthesis, Discussion and Conclusions}
 
 \begin{frame}
+  \frametitle{A spectrum of similarity and differences}
+  \includegraphics[width=\textwidth]{data_Classif_batchmark_registry_glmnet_featureless_mean_sd}
+  \begin{itemize}
+  \item Different patterns of same/other/all
+    test error rates, depending on the similarity of the
+    groups in each data set.
+  \end{itemize}
+\end{frame}
+ 
+\begin{frame}
   \frametitle{Data sets analyzed}
   \begin{itemize}
-  \item Sorted by test error difference between other and same.
+  \item Sorted by test error difference between all and same.
   \item Different groups on top/positive.
   \item Similar groups on bottom/negative.
   \end{itemize}
   \scriptsize
+% \begin{tabular}{rlrrrrr}
+%   \hline
+%  & data.name & rows & features & classes & n.groups & other-same \\ 
+%   \hline
+% 1 & vowel & 990 &  10 &  11 &   2 & 29.61 \\ 
+%   2 & CanadaFires\_all & 4827 &  46 &   2 &   4 & 12.94 \\ 
+%   3 & aztrees3 & 5956 &  21 &   2 &   3 & 12.68 \\ 
+%   4 & aztrees4 & 5956 &  21 &   2 &   4 & 11.10 \\ 
+%   5 & CanadaFires\_downSampled & 1491 &  46 &   2 &   4 & 10.95 \\ 
+%   6 & KMNIST & 70000 & 784 &  10 &   2 & 5.62 \\ 
+%   7 & FishSonar\_river & 2815744 &  81 &   2 &   4 & 2.13 \\ 
+%   8 & FashionMNIST & 70000 & 784 &  10 &   2 & 0.33 \\ 
+%   9 & zipUSPS & 9298 & 256 &  10 &   2 & 0.26 \\ 
+%   10 & MNIST & 70000 & 784 &  10 &   2 & 0.22 \\ 
+%   11 & QMNIST & 120000 & 784 &  10 &   2 & 0.17 \\ 
+%   12 & NSCH\_autism & 46010 & 364 &   2 &   2 & 0.08 \\ 
+%   13 & CIFAR10 & 60000 & 3072 &  10 &   2 & -0.11 \\ 
+%   14 & EMNIST & 70000 & 784 &  10 &   2 & -0.23 \\ 
+%   15 & spam & 4601 &  57 &   2 &   2 & -0.36 \\ 
+%   16 & STL10 & 13000 & 27648 &  10 &   2 & -0.47 \\ 
+%   17 & waveform & 800 &  21 &   3 &   2 & -0.69 \\ 
+%    \hline
+% \end{tabular}
+
 \begin{tabular}{rlrrrrr}
   \hline
- & data.name & rows & features & classes & n.groups & other-same \\ 
+ & data.name & rows & features & classes & n.groups & all-same \\ 
   \hline
-1 & vowel & 990 &  10 &  11 &   2 & 29.61 \\ 
-  2 & CanadaFires\_all & 4827 &  46 &   2 &   4 & 12.94 \\ 
-  3 & aztrees3 & 5956 &  21 &   2 &   3 & 12.68 \\ 
-  4 & aztrees4 & 5956 &  21 &   2 &   4 & 11.10 \\ 
-  5 & CanadaFires\_downSampled & 1491 &  46 &   2 &   4 & 10.95 \\ 
-  6 & KMNIST & 70000 & 784 &  10 &   2 & 5.62 \\ 
-  7 & FishSonar\_river & 2815744 &  81 &   2 &   4 & 2.13 \\ 
-  8 & FashionMNIST & 70000 & 784 &  10 &   2 & 0.33 \\ 
-  9 & zipUSPS & 9298 & 256 &  10 &   2 & 0.26 \\ 
-  10 & MNIST & 70000 & 784 &  10 &   2 & 0.22 \\ 
-  11 & QMNIST & 120000 & 784 &  10 &   2 & 0.17 \\ 
-  12 & NSCH\_autism & 46010 & 364 &   2 &   2 & 0.08 \\ 
-  13 & CIFAR10 & 60000 & 3072 &  10 &   2 & -0.11 \\ 
-  14 & EMNIST & 70000 & 784 &  10 &   2 & -0.23 \\ 
-  15 & spam & 4601 &  57 &   2 &   2 & -0.36 \\ 
-  16 & STL10 & 13000 & 27648 &  10 &   2 & -0.47 \\ 
-  17 & waveform & 800 &  21 &   3 &   2 & -0.69 \\ 
+1 & vowel & 990 &  10 &  11 &   2 & 9.98 \\ 
+  2 & CanadaFires\_downSampled & 1491 &  46 &   2 &   4 & 4.02 \\ 
+  3 & CanadaFires\_all & 4827 &  46 &   2 &   4 & 3.39 \\ 
+  4 & aztrees4 & 5956 &  21 &   2 &   4 & 2.28 \\ 
+  5 & aztrees3 & 5956 &  21 &   2 &   3 & 2.05 \\ 
+  6 & FishSonar\_river & 2815744 &  81 &   2 &   4 & 1.69 \\ 
+  7 & KMNIST & 70000 & 784 &  10 &   2 & 0.87 \\
+  \hline
+  8 & NSCH\_autism & 46010 & 364 &   2 &   2 & -0.03 \\ 
+  9 & MNIST & 70000 & 784 &  10 &   2 & -0.53 \\ 
+  10 & QMNIST & 120000 & 784 &  10 &   2 & -0.70 \\ 
+  11 & spam & 4601 &  57 &   2 &   2 & -0.77 \\ 
+  12 & EMNIST & 70000 & 784 &  10 &   2 & -0.85 \\ 
+  13 & FashionMNIST & 70000 & 784 &  10 &   2 & -0.97 \\ 
+  14 & zipUSPS & 9298 & 256 &  10 &   2 & -1.44 \\ 
+  15 & waveform & 800 &  21 &   3 &   2 & -1.54 \\ 
+  16 & CIFAR10 & 60000 & 3072 &  10 &   2 & -1.77 \\ 
+  17 & STL10 & 13000 & 27648 &  10 &   2 & -1.97 \\ 
    \hline
 \end{tabular}
 
 \end{frame}
 
 \begin{frame}
-  \frametitle{Map of data set sub-group similarity}
-  \includegraphics[width=\textwidth]{data_Classif_batchmark_registry_scatter_other_all.png}
+  \frametitle{Map of data set group similarity}
+  \includegraphics[width=\textwidth]{data_Classif_batchmark_registry_scatter_other_zoom_inset.png}
   \begin{itemize}
-  \item Overview of how similar/different are sub-groups in each data set. (Data sets with similar sub-groups appear in lower left.)
-  \item Mean difference in percent test error, all/other-same, is
-    shown for each data set.
+  \item Overview of how similar/different are groups in each data set. 
+  \item Inset/zoom shows data sets where we can train on one group,
+    and accurately predict on another.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Zoom to most similar data sets}
-  \includegraphics[width=0.9\textheight]{data_Classif_batchmark_registry_scatter_other_all_similar.png}
+  \includegraphics[height=\textheight]{data_Classif_batchmark_registry_scatter_all.png}
 \end{frame}
-
+ 
 \begin{frame}
   \frametitle{Discussion and Conclusions}
   \begin{itemize}
