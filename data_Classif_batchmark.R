@@ -60,6 +60,7 @@ batchtools::submitJobs(chunks, resources=list(
 reg.dir <- "data_Classif_batchmark_registry"
 reg=batchtools::loadRegistry(reg.dir)
 print(batchtools::getStatus(reg=reg))
+batchtools::findExpired(reg=reg)
 jobs.after <- batchtools::getJobTable(reg=reg)
 dcast(jobs.after[, data.table(done.str=ifelse(is.na(done), "notDone", "done"),error.str=ifelse(is.na(error),"ok","error"),task_id=sapply(prob.pars, "[[", "task_id"))], task_id ~ done.str + error.str, length)
 table(jobs.after$error)

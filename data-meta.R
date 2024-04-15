@@ -11,7 +11,7 @@ for(data.csv.i in seq_along(data.csv.vec)){
   y.vec <- data.dt[["y"]]
   (group.tab <- sort(table(group.vec)))
   n.groups <- length(group.tab)
-  (label.tab <- table(y.vec))
+  (label.tab <- sort(table(y.vec)))
   (both.tab <- table(y.vec, group.vec))
   bytes2kb <- function(x)as.integer(x/1024)
   tab2dt <- function(tab){
