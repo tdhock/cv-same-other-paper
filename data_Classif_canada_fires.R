@@ -1,5 +1,5 @@
-fread("data_Classif_canada_fires/select17_vari_undersampling.csv")
 library(data.table)
+fread("data_Classif_canada_fires/select17_vari_undersampling.csv")
 fires.csv.list <- list(
   all="All_data_SkysatImages_Gaby.csv",
   downSampled="Undersampling_75_classe2.csv",
