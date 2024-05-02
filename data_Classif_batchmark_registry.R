@@ -35,9 +35,9 @@ Data <- function(data.name, Data){
 disp.dt <- rbind(
   Data("CanadaFires_all","CanadaFiresA"),
   Data("CanadaFires_downSampled","CanadaFiresD"),
-  Data("MNIST_EMNIST", "MNIST_E"),
-  Data("MNIST_EMNIST_rot", "MNIST_E_rot"),
-  Data("MNIST_FashionMNIST","MNIST_Fashion"))
+  Data("MNIST_EMNIST", "IPair_E"),
+  Data("MNIST_EMNIST_rot", "IPair_E_rot"),
+  Data("MNIST_FashionMNIST","IPair_Fashion"))
 meta.raw <- data.table::fread("data-meta.csv")[
   grepl("train|test",group.small.name), `:=`(
     test=ifelse(group.small.name=="test", group.small.N, group.large.N),
@@ -47,7 +47,7 @@ meta.raw <- data.table::fread("data-meta.csv")[
 , `test%` := as.integer(100*test/rows)
 ][
 , group.type := fcase(
-  grepl("MNIST_", data.name), "MNIST",
+  grepl("MNIST_", data.name), "ImagePair",
   !is.na(test), "train/test",
   default="real")
 ][]
@@ -56,7 +56,7 @@ meta.dt <- disp.dt[
 ][is.na(Data), Data := data.name][]
 meta.dt[order(group.type,data.name), .(group.type, data.name, group.tab)]
 table1 <- meta.dt[order(group.type,data.name), .(
-  group.type, Data, rows, features,
+  Type=group.type, Data, rows, features,
   classes,
   Im.class=label.large.N/label.small.N,
   groups=n.groups,
@@ -71,6 +71,25 @@ group.meta <- meta.dt[, nc::capture_all_str(
   group.rows="[0-9]+", as.integer
 ), by=data.name]
 score.join <- meta.dt[score.atomic, on="data.name"]
+
+## is training on other better than nothing/featureless?
+tab.wide.algos <- dcast(
+  score.join,
+  group.type + Data + test.group + test.fold ~ train.groups + algorithm,
+  value.var="percent.error")
+tab.wide.algos[, {
+  test.res <- t.test(other_cv_glmnet, same_featureless, paired=TRUE)
+  with(test.res, data.table(
+    estimate,
+    p.value,
+    same_featureless_mean=mean(same_featureless,na.rm=TRUE),
+    other_cv_glmnet_mean=mean(other_cv_glmnet,na.rm=TRUE),
+    log10.p=log10(p.value),
+    N=.N))
+}, by=.(group.type, Data, test.group)
+][order(estimate)]
+
+
 
 (tab.wide <- dcast(
   score.join[algorithm=="cv_glmnet"],
@@ -166,7 +185,7 @@ compare.wide[log10.p_all < -12, log10.p_all := -Inf][]
 compare.wide[log10.p_other < -20, log10.p_other := -Inf][]
 scale.fill <- scale_fill_manual(
   "Subset type", values=c(
-  MNIST="black",
+  ImagePair="black",
   real="white",
   "train/test"="red"))
 gg <- ggplot()+
@@ -297,6 +316,123 @@ png("data_Classif_batchmark_registry_scatter_all_segments.png", width=5, height=
 print(gg)
 dev.off()
 
+text.x <- -5
+text.dt <- rbind(
+  tlab(-1.8, 8, "p<0.05"),
+  tlab(text.x, -4, "Beneficial\nto combine"),
+  tlab(text.x, 7, "Detrimental\nto combine"),
+  NULL)
+set.seed(2)
+gg <- ggplot()+
+  ggtitle("Is it beneficial to combine subsets?")+
+  theme_bw()+
+  theme(legend.position=c(0.9,0.9))+
+  geom_vline(xintercept=log10(0.05),color="grey")+
+  geom_hline(yintercept=0,color="black")+
+  geom_text(aes(
+    x, y, label=label, color=NULL),
+    vjust=0,
+    color="grey50",
+    data=text.dt)+
+  geom_segment(aes(
+    y=estimate_min_all, x=log10.p_mean_all,
+    yend=estimate_max_all, xend=log10.p_mean_all,
+    color=Data),
+    data=compare.wide)+
+  geom_segment(aes(
+    y=estimate_mean_all, x=log10.p_min_all,
+    yend=estimate_mean_all, xend=log10.p_max_all,
+    color=Data),
+    data=compare.wide)+
+  geom_point(aes(
+    log10.p_mean_all,
+    estimate_mean_all,
+    color=Data,
+    fill=group.type),
+    shape=21,
+    data=compare.wide)+
+  ggrepel::geom_label_repel(aes(
+    log10.p_mean_all,
+    estimate_mean_all,
+    color=Data,
+    label=Data),
+    alpha=0.75,
+    size=2.8,
+    data=compare.wide)+
+  scale.fill+
+  scale_color_discrete(guide="none")+
+  scale_x_continuous(
+    "<- highly significant -- log10(p-value) -- not significant ->",
+    breaks=seq(-100,0,by=2))+
+  scale_y_continuous(
+    "Percent test error difference (all-same)",
+    breaks=seq(-100,10,by=2))+
+  coord_cartesian(
+    ylim=c(-4,10),
+    xlim=c(-6.5,0))
+png("data_Classif_batchmark_registry_scatter_all_segments_flip.png", width=5, height=4, units="in", res=200)
+print(gg)
+dev.off()
+
+all.xt <- wide.xt[order(-estimate_min_all), .(
+  Data=gsub("_","\\\\_",Data),
+  ErrorDiff=min.comma.max(estimate_min_all,estimate_max_all),
+  `log10(P)`=min.comma.max(log10.p_min_all,log10.p_max_all))]
+print(xtable(all.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
+text.y <- -6.5
+text.dt <- rbind(
+  tlab(6, -1, "p<0.05"),
+  tlab(-2, text.y, "Beneficial\nto combine"),
+  tlab(8, text.y, "Detrimental\nto combine"))
+set.seed(2)
+gg <- ggplot()+
+  ggtitle("Is it beneficial to combine subsets?")+
+  theme_bw()+
+  theme(legend.position=c(0.9,0.9))+
+  geom_hline(yintercept=log10(0.05),color="grey")+
+  geom_vline(xintercept=0,color="grey")+
+  geom_text(aes(
+    x, y, label=label, color=NULL),
+    vjust=0,
+    color="grey50",
+    data=text.dt)+
+  geom_segment(aes(
+    estimate_min_all, log10.p_mean_all,
+    xend=estimate_max_all, yend=log10.p_mean_all,
+    color=Data),
+    data=compare.wide)+
+  geom_segment(aes(
+    estimate_mean_all, log10.p_min_all,
+    xend=estimate_mean_all, yend=log10.p_max_all,
+    color=Data),
+    data=compare.wide)+
+  geom_point(aes(
+    estimate_mean_all, log10.p_mean_all,
+    color=Data,
+    fill=group.type),
+    shape=21,
+    data=compare.wide)+
+  ggrepel::geom_label_repel(aes(
+    estimate_mean_all, log10.p_mean_all, color=Data,
+    label=Data),
+    alpha=0.75,
+    size=2.8,
+    data=compare.wide)+
+  scale.fill+
+  scale_color_discrete(guide="none")+
+  scale_y_continuous(
+    "log10(p-value)\n<- highly significant --- not significant ->",
+    breaks=seq(-100,0,by=2))+
+  scale_x_continuous(
+    "Percent test error difference (all-same)",
+    breaks=seq(-100,10,by=2))+
+  coord_cartesian(
+    xlim=c(-4,10),
+    ylim=c(-7,0))
+png("data_Classif_batchmark_registry_scatter_all_segments.png", width=5, height=4, units="in", res=200)
+print(gg)
+dev.off()
+
 text.y <- -12
 text.dt <- rbind(
   tlab(15, -1, "p<0.05"),
@@ -351,6 +487,70 @@ png("data_Classif_batchmark_registry_scatter_other_segments.png", width=5, heigh
 print(gg)
 dev.off()
 
+text.x <- -12
+text.dt <- rbind(
+  tlab(-3, 20, "p<0.05"),
+  tlab(text.x, -5, "Accurate"),
+  tlab(text.x, 20, "Inaccurate"),
+  NULL)
+set.seed(3)
+gg <- ggplot()+
+  theme_bw()+
+  theme(legend.position=c(0.15, 0.55))+
+  ggtitle("Accurate prediction on a new subset?")+
+  geom_vline(xintercept=log10(0.05),color="grey")+
+  geom_hline(yintercept=0,color="black")+
+  geom_segment(aes(
+    y=estimate_min_other, x=log10.p_mean_other,
+    yend=estimate_max_other, xend=log10.p_mean_other,
+    color=Data),
+    data=compare.wide)+
+  geom_segment(aes(
+    y=estimate_mean_other, x=log10.p_min_other,
+    yend=estimate_mean_other, xend=log10.p_max_other,
+    color=Data),
+    data=compare.wide)+
+  geom_text(aes(
+    x, y, label=label, color=NULL),
+    vjust=0,
+    color="grey50",
+    data=text.dt)+
+  geom_point(aes(
+    log10.p_mean_other,
+    estimate_mean_other,
+    color=Data,
+    fill=group.type),
+    shape=21,
+    data=compare.wide)+
+  ggrepel::geom_label_repel(aes(
+    log10.p_mean_other,
+    estimate_mean_other,
+    color=Data,
+    label=Data),
+    max.overlaps=20,
+    alpha=0.75,
+    size=3,
+    data=compare.wide)+
+  scale.fill+
+  scale_color_discrete(guide="none")+
+  scale_x_continuous(
+    "<- highly significant -- log10(p-value) -- not significant ->",
+    breaks=seq(-100,0,by=2))+
+  scale_y_continuous(
+    "Percent test error difference (other-same)",
+    breaks=seq(-10,100,by=5))+
+  coord_cartesian(
+    ylim=c(-5,30),
+    xlim=c(-20,2))
+png("data_Classif_batchmark_registry_scatter_other_segments_flip.png", width=5, height=4, units="in", res=200)
+print(gg)
+dev.off()
+other.xt <- wide.xt[order(estimate_min_other), .(
+  Data=gsub("_","\\\\_",Data),
+  ErrorDiff=min.comma.max(estimate_min_other,estimate_max_other),
+  `log10(P)`=min.comma.max(log10.p_min_other,log10.p_max_other))]
+print(xtable(other.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
+
 ymin <- -1
 ymax <- 0
 xmin <- -1
@@ -396,7 +596,7 @@ gg <- ggplot()+
   scale_x_continuous(
     "Percent test error difference (other-same)",
     breaks=seq(-10,100,by=10))
-    limits=c(-10,NA))
+##limits=c(-10,NA))
 png("data_Classif_batchmark_registry_scatter_other.png", width=6, height=4, units="in", res=200)
 print(gg)
 dev.off()
