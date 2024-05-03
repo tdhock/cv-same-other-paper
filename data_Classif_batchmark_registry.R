@@ -49,7 +49,7 @@ meta.raw <- data.table::fread("data-meta.csv")[
 , group.type := fcase(
   grepl("MNIST_", data.name), "ImagePair",
   !is.na(test), "train/test",
-  default="real")
+  default="time/space")
 ][]
 meta.dt <- disp.dt[
   meta.raw, on="data.name"
@@ -164,30 +164,44 @@ all.xt <- wide.xt[order(estimate_min_all), .(
   `$\\overline D$`=estimate_max_all,
   `$\\text{L}\\underline P$`=log10.p_min_all,
   `$\\text{L}\\overline P$`=log10.p_max_all)]
+
 box.size <- "0.5cm"
+type.colors <- c(
+  ImagePair="black",
+  "time/space"="white",
+  "train/test"="red")
 min.comma.max <- function(m,M){
   sprintf(
     "$\\parbox{%s}{\\rightline{%.1f}},\\parbox{%s}{\\rightline{%.1f}}$",
     box.size,m,
     box.size,M)
 }
-other.xt <- wide.xt[order(estimate_min_other), .(
-  Data=gsub("_","\\\\_",Data),
-  ErrorDiff=min.comma.max(estimate_min_other,estimate_max_other),
-  `log10(P)`=min.comma.max(log10.p_min_other,log10.p_max_other))]
-print(xtable(other.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
-all.xt <- wide.xt[order(estimate_min_all), .(
-  Data=gsub("_","\\\\_",Data),
-  ErrorDiff=min.comma.max(estimate_min_all,estimate_max_all),
-  `log10(P)`=min.comma.max(log10.p_min_all,log10.p_max_all))]
-print(xtable(all.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
+for(compare_name in c("other","all")){
+  s <- function(p)sprintf("%s_%s",p,compare_name)
+  compare.xt <- wide.xt[
+    order(-estimate_min_COMPARE),
+    list(
+      Data=sprintf(
+        "\\tikz\\draw[black,fill=%s] (0,0) circle (.5ex); %s",
+        type.colors[paste(group.type)],
+        gsub("_","\\\\_",Data)),
+      ErrorDiff=min.comma.max(estimate_min_COMPARE,estimate_max_COMPARE),
+      `log10(P)`=min.comma.max(log10.p_min_COMPARE,log10.p_max_COMPARE)
+    ),
+    env=with(CJ(
+      var=c("estimate","log10.p"),
+      fun=c("min","max")
+    )[, arg := paste0(var,"_",fun)],
+    structure(lapply(arg, s), names=paste0(arg,"_COMPARE"))
+    )
+  ]
+  print(xtable(compare.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
+}
+
 compare.wide[log10.p_all < -12, log10.p_all := -Inf][]
 compare.wide[log10.p_other < -20, log10.p_other := -Inf][]
 scale.fill <- scale_fill_manual(
-  "Subset type", values=c(
-  ImagePair="black",
-  real="white",
-  "train/test"="red"))
+  "Subset type", values=type.colors)
 gg <- ggplot()+
   theme_bw()+
   geom_hline(yintercept=0,color="grey")+
