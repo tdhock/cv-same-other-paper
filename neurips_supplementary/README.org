@@ -1,0 +1,51 @@
+Replication materials for "SOAK: Same/Other/All K-fold cross-validation for
+estimating similarity of patterns in data subsets"
+
+First, run these to pre-process the data sets.
+
+[[file:data_Classif_FishSonar.R]]
+
+[[file:data_Classif_aztrees.R]]
+
+[[file:data_Classif_esl2.R]]
+
+[[file:data_Classif_vision_simple.py]]
+
+[[file:data_Classif_canada_fires.R]]
+
+[[file:data_Classif_NSCH_autism.R]]
+
+After running the code above, data_Classif/ should then contain all 20
+*.csv files. Data sets can also be downloaded from https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif/
+
+** Figure 1
+
+   No code used.
+   
+** Table 1
+
+[[file:data-meta.R][Code]].
+
+** Figure 2
+
+[[file:data_Classif_batchmark_algos_registry_error_mean_sd.png]]
+
+[[file:data_Classif_batchmark_algos_registry_minutes_mean_sd.png]]
+
+Code for [[file:data_Classif_batchmark_algos.R][computing]], [[file:data_Classif_batchmark_algos_registry.R][plotting]].
+
+** Figures 3-5
+
+Code for [[file:data_Classif_batchmark.R][computing]], [[file:data_Classif_batchmark_registry.R][plotting]].
+
+Figure 3
+   
+[[file:data_Classif_batchmark_registry_glmnet_featureless_mean_sd.png]]
+
+Figure 4
+
+[[file:data_Classif_batchmark_registry_scatter_all_segments_flip.png]]
+
+Figure 5
+
+[[file:data_Classif_batchmark_registry_scatter_other_segments_flip.png]]
