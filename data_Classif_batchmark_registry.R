@@ -28,6 +28,10 @@ if(FALSE){
   fold.counts[cv_glmnet != 10]
   fold.counts[grepl("MNIST", data.name)]
 }
+score.atomic[, `:=`(
+  test_subset = test.group,
+  train_subsets = train.groups
+)][]
 
 Data <- function(data.name, Data){
   data.table(data.name, Data)
@@ -46,7 +50,7 @@ meta.raw <- data.table::fread("data-meta.csv")[
 ][
 , `test%` := as.integer(100*test/rows)
 ][
-, group.type := fcase(
+, subset_type := fcase(
   grepl("MNIST_", data.name), "ImagePair",
   !is.na(test), "train/test",
   default="time/space")
@@ -54,9 +58,9 @@ meta.raw <- data.table::fread("data-meta.csv")[
 meta.dt <- disp.dt[
   meta.raw, on="data.name"
 ][is.na(Data), Data := data.name][]
-meta.dt[order(group.type,data.name), .(group.type, data.name, group.tab)]
-table1 <- meta.dt[order(group.type,data.name), .(
-  Type=group.type, Data, rows, features,
+meta.dt[order(subset_type,data.name), .(subset_type, data.name, group.tab)]
+table1 <- meta.dt[order(subset_type,data.name), .(
+  Type=subset_type, Data, rows, features,
   classes,
   Im.class=label.large.N/label.small.N,
   groups=n.groups,
@@ -66,16 +70,16 @@ xtable1 <- xtable(table1, digits=1)
 print(xtable1, type="latex")
 group.meta <- meta.dt[, nc::capture_all_str(
   group.tab,
-  test.group="[^;]+",
+  test_subset="[^;]+",
   "=",
-  group.rows="[0-9]+", as.integer
+  subset_rows="[0-9]+", as.integer
 ), by=data.name]
 score.join <- meta.dt[score.atomic, on="data.name"]
 
 ## is training on other better than nothing/featureless?
 tab.wide.algos <- dcast(
   score.join,
-  group.type + Data + test.group + test.fold ~ train.groups + algorithm,
+  subset_type + Data + test_subset + test.fold ~ train_subsets + algorithm,
   value.var="percent.error")
 tab.wide.algos[, {
   test.res <- t.test(other_cv_glmnet, same_featureless, paired=TRUE)
@@ -86,14 +90,14 @@ tab.wide.algos[, {
     other_cv_glmnet_mean=mean(other_cv_glmnet,na.rm=TRUE),
     log10.p=log10(p.value),
     N=.N))
-}, by=.(group.type, Data, test.group)
+}, by=.(subset_type, Data, test_subset)
 ][order(estimate)]
 
 
 
 (tab.wide <- dcast(
   score.join[algorithm=="cv_glmnet"],
-  group.type + Data + test.group + test.fold ~ train.groups,
+  subset_type + Data + test_subset + test.fold ~ train_subsets,
   value.var="percent.error"))
 (tab.long.raw <- melt(
   tab.wide,
@@ -117,20 +121,20 @@ computeP <- function(...){
       N=.N))
   }, by=by.vec]
 }
-p.each.group <- computeP("group.type","Data","compare_name","test.group")
+p.each.group <- computeP("subset_type","Data","compare_name","test_subset")
 compare.wide.groups <- dcast(
   p.each.group,
-  group.type + Data ~ compare_name,
+  subset_type + Data ~ compare_name,
   list(min, max, mean),
   value.var=c("estimate","log10.p"))
-tab.long <- computeP("group.type","Data","compare_name")
+tab.long <- computeP("subset_type","Data","compare_name")
 (compare.wide <- dcast(
   tab.long,
-  group.type + Data ~ compare_name,
+  subset_type + Data ~ compare_name,
   value.var=c("estimate","log10.p")
-)[compare.wide.groups, on=.(group.type,Data)])
+)[compare.wide.groups, on=.(subset_type,Data)])
 (wide.xt <- meta.dt[compare.wide, .(
-  group.type, Data,
+  subset_type, Data,
   #rows, features, classes, n.groups,
   "other-same"=estimate_other,
   log10.p_other,
@@ -183,7 +187,7 @@ for(compare_name in c("other","all")){
     list(
       Data=sprintf(
         "\\tikz\\draw[black,fill=%s] (0,0) circle (.5ex); %s",
-        type.colors[paste(group.type)],
+        type.colors[paste(subset_type)],
         gsub("_","\\\\_",Data)),
       ErrorDiff=min.comma.max(estimate_min_COMPARE,estimate_max_COMPARE),
       `log10(P)`=min.comma.max(log10.p_min_COMPARE,log10.p_max_COMPARE)
@@ -209,7 +213,7 @@ gg <- ggplot()+
   geom_point(aes(
     estimate_other, estimate_all,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   scale.fill+
@@ -256,7 +260,7 @@ gg <- ggplot()+
   geom_point(aes(
     estimate_all, log10.p_all,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_text_repel(aes(
@@ -306,7 +310,7 @@ gg <- ggplot()+
   geom_point(aes(
     estimate_mean_all, log10.p_mean_all,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_label_repel(aes(
@@ -362,7 +366,7 @@ gg <- ggplot()+
     log10.p_mean_all,
     estimate_mean_all,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_label_repel(aes(
@@ -423,7 +427,7 @@ gg <- ggplot()+
   geom_point(aes(
     estimate_mean_all, log10.p_mean_all,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_label_repel(aes(
@@ -450,8 +454,8 @@ dev.off()
 text.y <- -12
 text.dt <- rbind(
   tlab(15, -1, "p<0.05"),
-  tlab(-4.5, text.y, "Accurate"),
-  tlab(10, text.y, "Inaccurate"))
+  tlab(-7.5, text.y, "Accurate"),
+  tlab(20, text.y, "Inaccurate"))
 set.seed(3)
 gg <- ggplot()+
   theme_bw()+
@@ -477,7 +481,7 @@ gg <- ggplot()+
   geom_point(aes(
     estimate_mean_other, log10.p_mean_other,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_label_repel(aes(
@@ -533,7 +537,7 @@ gg <- ggplot()+
     log10.p_mean_other,
     estimate_mean_other,
     color=Data,
-    fill=group.type),
+    fill=subset_type),
     shape=21,
     data=compare.wide)+
   ggrepel::geom_label_repel(aes(
@@ -590,7 +594,7 @@ gg <- ggplot()+
     data=text.dt)+
   geom_point(aes(
     estimate_other, log10.p_other,
-    fill=group.type,
+    fill=subset_type,
     color=Data),
     shape=21,
     data=compare.wide)+
@@ -632,7 +636,7 @@ gg <- ggplot()+
   scale_color_discrete(guide="none")+
   geom_point(aes(
     estimate_other, log10.p_other,
-    fill=group.type,
+    fill=subset_type,
     color=Data),
     shape=21,
     data=compare.wide)+
@@ -658,11 +662,11 @@ system("cd /projects/genomic-ml && unpublish_data cv-same-other-paper && publish
 tt.join <- score.join[
   grepl("train|test",group.small.name)
 ][
-, predefined.set := test.group
+, predefined.set := test_subset
 ][]
 gg <- ggplot()+
   geom_point(aes(
-    percent.error, train.groups, color=algorithm),
+    percent.error, train_subsets, color=algorithm),
     shape=1,
     data=tt.join)+
   facet_grid(predefined.set ~ rows + Data +  `test%`, labeller=label_both)+
@@ -676,7 +680,7 @@ dev.off()
 
 dot.both <- dcast(
   tt.join,
-  Data + task_id + `test%` + rows + train.groups + predefined.set + algorithm ~ .,
+  Data + task_id + `test%` + rows + train_subsets + predefined.set + algorithm ~ .,
   list(
     length, median,
     mean, sd,
@@ -697,15 +701,15 @@ gg <- ggplot()+
     vjust=1.1,
     data=meta.long)+
   geom_segment(aes(
-    percent.error_q25, train.groups,
-    xend=percent.error_q75, yend=train.groups),
+    percent.error_q25, train_subsets,
+    xend=percent.error_q75, yend=train_subsets),
     data=dot.counts)+
   geom_point(aes(
-    percent.error_median, train.groups),
+    percent.error_median, train_subsets),
     shape=1,
     data=dot.counts)+
   geom_text(aes(
-    percent.error_median, train.groups,
+    percent.error_median, train_subsets,
     label=sprintf("%.1f", percent.error_median)),
     vjust=1.5,
     data=dot.counts)+
@@ -727,16 +731,16 @@ gg <- ggplot()+
     data=meta.long)+
   geom_segment(aes(
     percent.error_mean+percent.error_sd,
-    train.groups,
+    train_subsets,
     xend=percent.error_mean-percent.error_sd,
-    yend=train.groups),
+    yend=train_subsets),
     data=dot.counts)+
   geom_point(aes(
-    percent.error_mean, train.groups),
+    percent.error_mean, train_subsets),
     shape=1,
     data=dot.counts)+
   geom_text(aes(
-    percent.error_median, train.groups,
+    percent.error_median, train_subsets,
     label=sprintf("%.1f", percent.error_median)),
     vjust=1.5,
     data=dot.counts)+
@@ -762,12 +766,12 @@ show.meta <- meta.long[show.names,on="Data"]
 show.both <- dot.both[show.names,on="Data"]
 show.p <- meta.dt[
   p.each.group[show.names,on="Data"],
-  on=.(Data,group.type)
+  on=.(Data,subset_type)
 ][
 , `:=`(
-  train.groups = paste0(compare_name,"-same"),
+  train_subsets = paste0(compare_name,"-same"),
   algorithm = "cv_glmnet",
-  predefined.set = test.group
+  predefined.set = test_subset
 )][]
 text.size <- 3.5
 gg <- ggplot()+
@@ -785,14 +789,14 @@ gg <- ggplot()+
     color="grey50",
     data=show.meta)+
   geom_segment(aes(
-    compare_mean, train.groups,
+    compare_mean, train_subsets,
     color=algorithm,
-    xend=same_mean, yend=train.groups),
+    xend=same_mean, yend=train_subsets),
     size=1,
     data=show.p)+
   geom_text(aes(
     pmax(compare_mean, same_mean),
-    train.groups,
+    train_subsets,
     label=if(FALSE){
       sprintf(
         "Diff=%.1f\np%s",
@@ -817,18 +821,18 @@ gg <- ggplot()+
     data=show.p)+
   geom_segment(aes(
     percent.error_mean+percent.error_sd,
-    train.groups,
+    train_subsets,
     color=algorithm,
     xend=percent.error_mean-percent.error_sd,
-    yend=train.groups),
+    yend=train_subsets),
     size=1,
     data=show.both)+
   geom_point(aes(
-    percent.error_mean, train.groups, color=algorithm),
+    percent.error_mean, train_subsets, color=algorithm),
     shape=1,
     data=show.both)+
   geom_text(aes(
-    percent.error_median, train.groups,
+    percent.error_median, train_subsets,
     color=algorithm,
     hjust=ifelse(algorithm=="featureless",1,0),
     label=sprintf("%.1f", percent.error_median)),
@@ -849,19 +853,22 @@ meta.not.tt <- meta.dt#[is.na(test)]
 for(meta.i in 1:nrow(meta.not.tt)){
   cat(sprintf("%4d / %4d data sets\n", meta.i, nrow(meta.not.tt)))
   meta.row <- meta.not.tt[meta.i]
-  scores.not <- score.dt[meta.row, on=.(task_id=data.name), nomatch=0L]
+  scores.not <- score.atomic[meta.row, on=.(task_id=data.name), nomatch=0L]
   if(nrow(scores.not)){
     gg <- ggplot()+
       ggtitle(paste("Data set:", meta.row$data.name))+
       geom_point(aes(
-        percent.error, train.groups, color=algorithm),
+        percent.error, train_subsets, color=algorithm),
         shape=1,
         data=scores.not)+
-      facet_grid(. ~ test.group, labeller=label_both, scales="free")+
+      scale_color_manual(values=c(
+        featureless="red",
+        cv_glmnet="black"))+
+      facet_grid(. ~ test_subset, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "Percent prediction error on CV test group (one dot for each of 10 folds in CV)")+
+        "Percent prediction error on CV test subset (one dot for each of 10 folds in CV)")+
       scale_y_discrete(
-        "Train groups")
+        "Train subsets")
     out.png <- sprintf(
       "data_Classif_figures/%s_error_glmnet_featureless.png",
       meta.row$data.name)
@@ -870,28 +877,31 @@ for(meta.i in 1:nrow(meta.not.tt)){
     dev.off()
     scores.wide <- dcast(
       scores.not,
-      algorithm + data.name + train.groups + test.group ~ .,
+      algorithm + data.name + train_subsets + test_subset ~ .,
       list(mean, sd),
       value.var="percent.error")
-    join.wide <- group.meta[scores.wide, on=.(data.name, test.group)]
+    join.wide <- group.meta[scores.wide, on=.(data.name, test_subset)]
     gg <- ggplot()+
       theme_bw()+
       theme(axis.text.x=element_text(angle=30, hjust=1))+
       ggtitle(paste("Data set:", meta.row$data.name))+
       geom_point(aes(
-        percent.error_mean, train.groups, color=algorithm),
+        percent.error_mean, train_subsets, color=algorithm),
         shape=1,
         data=join.wide)+
+      scale_color_manual(values=c(
+        featureless="red",
+        cv_glmnet="black"))+
       geom_segment(aes(
-        percent.error_mean-percent.error_sd, train.groups,
+        percent.error_mean-percent.error_sd, train_subsets,
         color=algorithm,
-        xend=percent.error_mean+percent.error_sd, yend=train.groups),
+        xend=percent.error_mean+percent.error_sd, yend=train_subsets),
         data=join.wide)+
-      facet_grid(. ~ test.group + group.rows, labeller=label_both, scales="free")+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "Percent error on CV test group (mean±SD over 10 folds in CV)")+
+        "Percent error on CV test subset (mean±SD over 10 folds in CV)")+
       scale_y_discrete(
-        "Train groups")
+        "Train subsets")
     out.png <- sprintf(
       "data_Classif_figures/%s_error_glmnet_featureless_mean_SD.png",
       meta.row$data.name)
@@ -900,27 +910,30 @@ for(meta.i in 1:nrow(meta.not.tt)){
     dev.off()
     scores.wide <- dcast(
       scores.not[algorithm =="cv_glmnet"],
-      data.name + train.groups + test.group ~ .,
+      data.name + train_subsets + test_subset ~ .,
       list(mean, sd),
       value.var="percent.error")
-    join.wide <- group.meta[scores.wide, on=.(data.name, test.group)]
+    join.wide <- group.meta[scores.wide, on=.(data.name, test_subset)]
     gg <- ggplot()+
       theme_bw()+
       theme(axis.text.x=element_text(angle=30, hjust=1))+
+      scale_color_manual(values=c(
+        featureless="red",
+        cv_glmnet="black"))+
       ggtitle(paste("Data set:", meta.row$data.name))+
       geom_point(aes(
-        percent.error_mean, train.groups),
+        percent.error_mean, train_subsets),
         shape=1,
         data=join.wide)+
       geom_segment(aes(
-        percent.error_mean-percent.error_sd, train.groups,
-        xend=percent.error_mean+percent.error_sd, yend=train.groups),
+        percent.error_mean-percent.error_sd, train_subsets,
+        xend=percent.error_mean+percent.error_sd, yend=train_subsets),
         data=join.wide)+
-      facet_grid(. ~ test.group + group.rows, labeller=label_both, scales="free")+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "Percent error of cv_glmnet on CV test group (mean±SD over 10 folds in CV)")+
+        "Percent error of cv_glmnet on CV test subset (mean±SD over 10 folds in CV)")+
       scale_y_discrete(
-        "Train groups")
+        "Train subsets")
     out.png <- sprintf(
       "data_Classif_figures/%s_error_glmnet_mean_SD.png",
       meta.row$data.name)
@@ -947,14 +960,14 @@ for(meta.i in 1:nrow(meta.binary)){
       ##   xintercept=0.5,
       ##   color="grey")+
       geom_point(aes(
-        classif.auc, train.groups),
+        classif.auc, train_subsets),
         shape=1,
         data=scores.not)+
-      facet_grid(. ~ test.group, labeller=label_both, scales="free")+
+      facet_grid(. ~ test_subset, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "AUC of cv_glmnet on CV test group (one dot for each of 10 folds in CV)")+
+        "AUC of cv_glmnet on CV test subset (one dot for each of 10 folds in CV)")+
       scale_y_discrete(
-        "Train groups")
+        "Train subsets")
     out.png <- sprintf(
       "data_Classif_batchmark_registry_glmnet_AUC_%s.png",
       meta.row$data.name)
@@ -963,27 +976,27 @@ for(meta.i in 1:nrow(meta.binary)){
     dev.off()
     scores.wide <- dcast(
       scores.not,
-      data.name + train.groups + test.group ~ .,
+      data.name + train_subsets + test_subset ~ .,
       list(mean, sd),
       value.var="classif.auc")
-    join.wide <- group.meta[scores.wide, on=.(data.name, test.group)]
+    join.wide <- group.meta[scores.wide, on=.(data.name, test_subset)]
     gg <- ggplot()+
       theme_bw()+
       theme(axis.text.x=element_text(angle=30, hjust=1))+
       ggtitle(paste("Data set:", meta.row$data.name))+
       geom_point(aes(
-        classif.auc_mean, train.groups),
+        classif.auc_mean, train_subsets),
         shape=1,
         data=join.wide)+
       geom_segment(aes(
-        classif.auc_mean-classif.auc_sd, train.groups,
-        xend=classif.auc_mean+classif.auc_sd, yend=train.groups),
+        classif.auc_mean-classif.auc_sd, train_subsets,
+        xend=classif.auc_mean+classif.auc_sd, yend=train_subsets),
         data=join.wide)+
-      facet_grid(. ~ test.group + group.rows, labeller=label_both, scales="free")+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
       scale_x_continuous(
-        "AUC of cv_glmnet on CV test group (mean±SD over 10 folds in CV)")+
+        "AUC of cv_glmnet on CV test subset (mean±SD over 10 folds in CV)")+
       scale_y_discrete(
-        "Train groups")
+        "Train subsets")
     out.png <- sprintf(
       "data_Classif_figures/%s_AUC_glmnet_mean_SD.png",
       meta.row$data.name)
