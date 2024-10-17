@@ -59,15 +59,17 @@ meta.dt <- disp.dt[
   meta.raw, on="data.name"
 ][is.na(Data), Data := data.name][]
 meta.dt[order(subset_type,data.name), .(subset_type, data.name, group.tab)]
+
 table1 <- meta.dt[order(subset_type,data.name), .(
   Type=subset_type, Data, rows, features,
   classes,
   Im.class=label.large.N/label.small.N,
-  groups=n.groups,
-  Im.group=group.large.N/group.small.N
+  subsets=n.groups,
+  Im.subset=group.large.N/group.small.N
 )]
 xtable1 <- xtable(table1, digits=1)
 print(xtable1, type="latex")
+
 group.meta <- meta.dt[, nc::capture_all_str(
   group.tab,
   test_subset="[^;]+",
@@ -174,6 +176,20 @@ type.colors <- c(
   ImagePair="black",
   "time/space"="white",
   "train/test"="red")
+tikz_dot <- function(subset_type)sprintf(
+  "\\tikz\\draw[black,fill=%s] (0,0) circle (.5ex);",
+  type.colors[paste(subset_type)])
+table1.slides <- meta.dt[order(subset_type,data.name), .(
+  Type=paste(tikz_dot(subset_type), subset_type),
+  Data, rows, features,
+  classes,
+  subsets=n.groups,
+  Im.subset=group.large.N/group.small.N
+)]
+xtable1.slides <- xtable(table1.slides, digits=1)
+print(xtable1.slides, type="latex", sanitize.text.function=function(x)gsub("_","\\\\_",x))
+
+
 min.comma.max <- function(m,M){
   sprintf(
     "$\\parbox{%s}{\\rightline{%.1f}},\\parbox{%s}{\\rightline{%.1f}}$",
@@ -185,9 +201,8 @@ for(compare_name in c("other","all")){
   compare.xt <- wide.xt[
     order(-estimate_min_COMPARE),
     list(
-      Data=sprintf(
-        "\\tikz\\draw[black,fill=%s] (0,0) circle (.5ex); %s",
-        type.colors[paste(subset_type)],
+      Data=paste(
+        tikz_dot(subset_type),
         gsub("_","\\\\_",Data)),
       ErrorDiff=min.comma.max(estimate_min_COMPARE,estimate_max_COMPARE),
       `log10(P)`=min.comma.max(log10.p_min_COMPARE,log10.p_max_COMPARE)
@@ -399,14 +414,17 @@ all.xt <- wide.xt[order(-estimate_min_all), .(
 print(xtable(all.xt, digits=1), type="latex", include.rownames=FALSE, sanitize.text.function=identity)
 text.y <- -6.5
 text.dt <- rbind(
-  tlab(6, -1, "p<0.05"),
-  tlab(-2, text.y, "Beneficial\nto combine"),
-  tlab(8, text.y, "Detrimental\nto combine"))
+  tlab(8, -1, "p>0.05"),
+  tlab(8, -1.9, "p<0.05"),
+  tlab(-1.5, text.y, "Beneficial\nto combine"),
+  tlab(1.5, text.y, "Detrimental\nto combine"))
 set.seed(2)
 gg <- ggplot()+
   ggtitle("Is it beneficial to combine subsets?")+
   theme_bw()+
-  theme(legend.position=c(0.9,0.9))+
+  theme(
+    legend.background=element_rect(fill=alpha("white",0.5)),
+    legend.position=c(0.85,0.25))+
   geom_hline(yintercept=log10(0.05),color="grey")+
   geom_vline(xintercept=0,color="grey")+
   geom_text(aes(
@@ -451,15 +469,16 @@ png("data_Classif_batchmark_registry_scatter_all_segments.png", width=5, height=
 print(gg)
 dev.off()
 
-text.y <- -12
+text.y <- -16
 text.dt <- rbind(
-  tlab(15, -1, "p<0.05"),
-  tlab(-7.5, text.y, "Accurate"),
-  tlab(20, text.y, "Inaccurate"))
+  tlab(35, -0.7, "p>0.05"),
+  tlab(35, -2.5, "p<0.05"),
+  tlab(-5.5, text.y, "Accurate"),
+  tlab(6, text.y, "Inaccurate"))
 set.seed(3)
 gg <- ggplot()+
   theme_bw()+
-  theme(legend.position=c(0.5, 0.2))+
+  theme(legend.position=c(0.6, 0.2))+
   ggtitle("Accurate prediction on a new subset?")+
   geom_hline(yintercept=log10(0.05),color="grey")+
   geom_vline(xintercept=0,color="grey")+
