@@ -862,7 +862,13 @@ gg <- ggplot()+
   scale_x_continuous(
     "Percent prediction error on CV test set in predefined set (mean +/- SD over 10 folds)")+
   scale_y_discrete(
-    "Predefined set(s) used for CV train set")
+    "Predefined set(s) used for CV train set",
+    limits=c(
+      "all",
+      "all-same",
+      "same",
+      "other-same",
+      "other"))
 png("data_Classif_batchmark_registry_glmnet_featureless_mean_sd.png", width=7.5, height=4, units="in", res=200)
 print(gg)
 dev.off()
