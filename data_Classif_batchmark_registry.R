@@ -873,8 +873,63 @@ png("data_Classif_batchmark_registry_glmnet_featureless_mean_sd.png", width=7.5,
 print(gg)
 dev.off()
 
+(meta.not.tt <- meta.dt[subset_type=="ImagePair"])
+dir.create("data_Classif_figures")
+for(meta.i in 1:nrow(meta.not.tt)){
+  cat(sprintf("%4d / %4d data sets\n", meta.i, nrow(meta.not.tt)))
+  meta.row <- meta.not.tt[meta.i]
+  scores.not <- score.atomic[meta.row, on=.(task_id=data.name), nomatch=0L]
+  if(nrow(scores.not)){
+    scores.wide <- dcast(
+      scores.not,
+      algorithm + data.name + train_subsets + test_subset ~ .,
+      list(mean, sd),
+      value.var="percent.error")
+    join.wide <- group.meta[scores.wide, on=.(data.name, test_subset)]
+    gg <- ggplot()+
+      theme_bw()+
+      theme(
+        ##legend.position="bottom",
+        axis.text.x=element_text(angle=30, hjust=1))+
+      ggtitle(paste("Data set:", meta.row$data.name))+
+      geom_point(aes(
+        percent.error_mean, train_subsets, color=algorithm),
+        shape=1,
+        data=join.wide)+
+      geom_text(aes(
+        percent.error_mean, train_subsets,
+        hjust=ifelse(algorithm=="featureless", 1.1, -0.1),
+        label=sprintf(
+          "%.1f±%.f", percent.error_mean, percent.error_sd),
+        color=algorithm),
+        data=join.wide)+
+      scale_color_manual(values=c(
+        featureless="red",
+        cv_glmnet="black"))+
+      geom_segment(aes(
+        percent.error_mean-percent.error_sd, train_subsets,
+        color=algorithm,
+        xend=percent.error_mean+percent.error_sd, yend=train_subsets),
+        data=join.wide)+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
+      scale_x_continuous(
+        "Percent error on CV test subset (mean±SD over 10 folds in CV)",
+        limits=c(0,100),
+        breaks=seq(0,100,by=20))+
+      scale_y_discrete(
+        "Train subsets")
+    out.png <- sprintf(
+      "data_Classif_figures/%s_error_glmnet_featureless_mean_SD_zoom.png",
+      meta.row$data.name)
+    png(out.png, width=8, height=2, units="in", res=200)
+    print(gg)
+    dev.off()
+  }
+}
+
 meta.not.tt <- meta.dt[data.name=="MNIST_EMNIST_rot"]
 meta.not.tt <- meta.dt#[is.na(test)]
+dir.create("data_Classif_figures")
 for(meta.i in 1:nrow(meta.not.tt)){
   cat(sprintf("%4d / %4d data sets\n", meta.i, nrow(meta.not.tt)))
   meta.row <- meta.not.tt[meta.i]
