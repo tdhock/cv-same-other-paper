@@ -184,12 +184,31 @@ print(gg)
 dev.off()
 
 
-(rank.stats <- some.stats[, .(
+some.stats <- score.stats[Data %in% c(
+  "EMNIST",
+  ##"aztrees3",
+  "vowel","waveform","NSCH_autism")
+][
+, data := sprintf(
+  "%s\nN=%d, D=%d",
+  Data, rows, features)
+][]
+fralgo <- c(
+  xgboost="Boosting",
+  rpart="Arbre de décision",
+  nearest_neighbors="Plus proches voisins",
+  featureless="Sans caractères",
+  cv_glmnet="Modèle linéaire")
+french <- function(DT)DT[, let(
+  données = Data,
+  Algorithme = fralgo[algorithm]
+)][]
+(rank.stats <- french(some.stats)[, .(
   rank = rank(percent.error_mean),
-  algorithm
-), by=.(Data, data)])
-(rank.pval <- score.join[
-  rank.stats, on=.(Data, algorithm)
+  Algorithme
+), by=.(Data, data, données)])
+(rank.pval <- french(score.join)[
+  rank.stats, on=.(Data, données, Algorithme)
 ][, {
   best <- percent.error[rank==1]
   .SD[
@@ -199,29 +218,32 @@ dev.off()
       err.other=estimate[2],
       err.diff=diff(estimate),
       p.value)),
-    by = .(rank,algorithm=paste0(algorithm,"-min"))]
-}, by = .(Data,data)])
+    by = .(rank,Algorithme=paste0(Algorithme,"-min"))]
+}, by = .(Data,data,données)])
 text.size <- 3
 rank.pval[, let(
   text.x=err.other,
   vjust=0.5
-)][algorithm=="featureless-min", let(
+)][Algorithme==paste0(fralgo[["featureless"]],"-min"), let(
   text.x=err.best,
   vjust=1.5
 )][]
-some.stats[, données := Data]
-rank.pval[, données := Data]
 diff.color <- "red"
+dd <- unique(some.stats[,.(données)])
+blank.dt <- dd[data.table(
+  données="NSCH_autism",
+  x=3.2,
+  y="Boosting"), on="données"]
 gg <- ggplot()+
-  ggtitle("Resultats de prédiction de 5 algorithmes d'apprentissage, sur 4 jeux de données")+
+  ggtitle("Résultats de prédiction de 5 algorithmes d'apprentissage, sur 4 jeux de données")+
   theme_bw()+
   geom_segment(aes(
-    err.best, algorithm,
-    xend=err.other, yend=algorithm),
+    err.best, Algorithme,
+    xend=err.other, yend=Algorithme),
     color=diff.color,
     data=rank.pval)+
   geom_text(aes(
-    text.x, algorithm,
+    text.x, Algorithme,
     vjust=vjust,
     label=sprintf(
       " Diff=%.1f %s",
@@ -232,35 +254,37 @@ gg <- ggplot()+
     hjust=0,
     data=rank.pval)+
   geom_segment(aes(
-    percent.error_mean+percent.error_sd, algorithm,
-    xend=percent.error_mean-percent.error_sd, yend=algorithm),
+    percent.error_mean+percent.error_sd, Algorithme,
+    xend=percent.error_mean-percent.error_sd, yend=Algorithme),
     data=some.stats)+
   geom_point(aes(
     percent.error_mean,
-    algorithm),
+    Algorithme),
     shape=1,
     data=some.stats)+
-  ##geom_blank(aes(x,y),data=blank.dt)+
+  geom_blank(aes(x,y),data=blank.dt)+
   geom_text(aes(
-    percent.error_mean+ifelse(algorithm=="featureless",-1,1)*percent.error_sd,
-    algorithm,
-    hjust=ifelse(algorithm=="featureless", 1, 0),
+    percent.error_mean+ifelse(Algorithme==fralgo[["featureless"]],-1,1)*percent.error_sd,
+    Algorithme,
+    hjust=ifelse(Algorithme==fralgo[["featureless"]], 1, 0),
     label=sprintf(
       "%s%.1f±%.1f%s",
-      ifelse(algorithm=="featureless",""," "),
+      ifelse(Algorithme==fralgo[["featureless"]],""," "),
       percent.error_mean,
       percent.error_sd,
-      ifelse(algorithm=="featureless"," ",""))),
+      ifelse(Algorithme==fralgo[["featureless"]]," ",""))),
     size=text.size,
     data=some.stats)+
-  scale_y_discrete("Algorithme")+
+  ##scale_y_discrete("Algorithme")+
   scale_x_continuous(
     "Taux d'erreur (%) sur l'ensemble test (moyenne ± écart type sur 10 blocs en validation croisée)")+
-  facet_grid(
-    ##. ~ Data + rows + features,
-    . ~ données,
-    scales="free", labeller=label_both)
-png("data_Classif_batchmark_algos_registry_error_mean_sd_p.png", width=10, height=2.5, units="in", res=200)
+  facet_wrap(
+    ~données, scales="free", labeller=label_both, nrow=2)
+  ## facet_grid(
+  ##   ##. ~ Data + rows + features,
+  ##   . ~ données,
+  ##   scales="free", labeller=label_both)
+png("data_Classif_batchmark_algos_registry_error_mean_sd_p.png", width=10, height=5, units="in", res=200)
 print(gg)
 dev.off()
 
