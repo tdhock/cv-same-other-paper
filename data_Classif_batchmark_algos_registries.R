@@ -11,6 +11,16 @@ for(reg.RData in reg.RData.vec){
   score.dt.list[[reg.RData]] <- bmr$score(msr.list)
 }
 score.dt <- rbindlist(score.dt.list)
+names(score.dt)
+score.dt[1]
+
+fwrite(score.dt[, .(
+  task_id,
+  algorithm=sub("classif.", "", learner_id),
+  fold=iteration,
+  classif.auc,
+  classif.ce
+)], "data_Classif_batchmark_algos_registries.csv")
 
 levs <- c(
   "featureless",

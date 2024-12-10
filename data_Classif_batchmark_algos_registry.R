@@ -7,6 +7,12 @@ reg.RData <- file.path(work.dir, "data_Classif_batchmark_algos_registry.RData")
 msr.list <- mlr3::msrs(c("classif.auc","classif.ce"))
 score.dt <- bmr$score(msr.list)
 
+fwrite(
+  score.dt[, .(task_id, learner_id, iteration, classif.auc, classif.ce)],
+  "data_Classif_batchmark_algos_registry.csv")
+
+score.dt <- fread("data_Classif_batchmark_algos_registry.csv")
+
 levs <- c(
   "featureless",
   "rpart",
