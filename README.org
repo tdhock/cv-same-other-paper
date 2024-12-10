@@ -1,3 +1,7 @@
+** 11 Nov 2024
+
+See [[https://github.com/tdhock/two-new-algos-sci-ml?tab=readme-ov-file#title-abstract-slides][newer slides in my two-new-algos-sci-ml repo]]!
+
 ** 9 Apr 2024
 
 [[file:slides/]] contains files for making presentation slides.
@@ -17,6 +21,10 @@ training on some different data subset/group (person, image,
 geographic region, year, etc). We discuss applications to several
 benchmark and real-world data sets, including predicting childhood
 autism, carbon emissions, and presence of objects in images.
+
+See also https://github.com/tdhock/two-new-algos-sci-ml for other slides that include a subset of the figures.
+
+And https://cloud.r-project.org/web/packages/mlr3resampling/vignettes/Newer_resamplers.html which explains how to use the software.
 
 Textbook chapter with an explanation of cross-validation: [[https://raw.githubusercontent.com/tdhock/2020-yiqi-summer-school/master/HOCKING-chapter.pdf][Introduction
 to Machine Learning and Neural Networks]].
