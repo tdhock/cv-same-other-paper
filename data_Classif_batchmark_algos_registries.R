@@ -197,7 +197,7 @@ fralgo <- c(
   xgboost="Boosting",
   rpart="Arbre de décision",
   nearest_neighbors="Plus proches voisins",
-  featureless="Sans caractères",
+  featureless="Sans caractère",
   cv_glmnet="Modèle linéaire")
 french <- function(DT)DT[, let(
   données = Data,
@@ -284,7 +284,7 @@ gg <- ggplot()+
   ##   ##. ~ Data + rows + features,
   ##   . ~ données,
   ##   scales="free", labeller=label_both)
-png("data_Classif_batchmark_algos_registry_error_mean_sd_p.png", width=10, height=5, units="in", res=200)
+png("data_Classif_batchmark_algos_registry_error_mean_sd_p.png", width=9, height=4.5, units="in", res=200)
 print(gg)
 dev.off()
 

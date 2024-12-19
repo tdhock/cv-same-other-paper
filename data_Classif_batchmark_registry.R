@@ -418,7 +418,7 @@ text.dt <- rbind(
   tlab(8, -1.9, "p<0.05"),
   tlab(-1.5, text.y, "Beneficial\nto combine"),
   tlab(1.5, text.y, "Detrimental\nto combine"))
-set.seed(2)
+set.seed(4)#IPair_E_rot not overlapping Detrimental to combine.
 gg <- ggplot()+
   ggtitle("Is it beneficial to combine subsets?")+
   theme_bw()+
@@ -469,12 +469,12 @@ png("data_Classif_batchmark_registry_scatter_all_segments.png", width=5, height=
 print(gg)
 dev.off()
 
-text.y <- -16
+text.y <- -17
 text.dt <- rbind(
   tlab(35, -0.7, "p>0.05"),
   tlab(35, -2.5, "p<0.05"),
-  tlab(-5.5, text.y, "Accurate"),
-  tlab(6, text.y, "Inaccurate"))
+  tlab(-5.5, text.y, "More\naccurate"),
+  tlab(6, text.y, "Less\naccurate"))
 set.seed(3)
 gg <- ggplot()+
   theme_bw()+
