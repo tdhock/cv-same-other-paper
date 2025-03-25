@@ -48,6 +48,22 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
+** 25 Mars 2025
+
+[[file:conv_images_figure.R]] makes
+
+[[file:conv_images_figures_same_other.png]]
+
+The figure above compares prediction error rates of five learning
+algorithms for the =MNIST_EMNIST_rot= data set, which has two subsets,
+both of which are images of digits, which look alike. The figure shows
+that training on the other subset is not sufficient to get the same
+level of prediction error, even for a convolutional network (1.8% same
+versus 8.9% other when predicting MNIST for example). These data
+suggest that learning is more difficult that we may expect, even with
+a convolutional neural network which is assumed to have good
+generalization/learning.
+
 ** 4 Apr 2024
 
 [[file:data_Classif_simulation.R]] makes
