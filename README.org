@@ -1,3 +1,7 @@
+** 11 Nov 2024
+
+See [[https://github.com/tdhock/two-new-algos-sci-ml?tab=readme-ov-file#title-abstract-slides][newer slides in my two-new-algos-sci-ml repo]]!
+
 ** 9 Apr 2024
 
 [[file:slides/]] contains files for making presentation slides.

@@ -11,6 +11,19 @@ for(reg.RData in reg.RData.vec){
   score.dt.list[[reg.RData]] <- bmr$score(msr.list)
 }
 score.dt <- rbindlist(score.dt.list)
+names(score.dt)
+score.dt[1]
+
+fwrite(score.dt[, .(
+  task_id,
+  algorithm=sub("classif.", "", learner_id),
+  fold=iteration,
+  classif.auc,
+  classif.ce
+)], "data_Classif_batchmark_algos_registries.csv")
+
+## after cache.
+score.dt <- fread("data_Classif_batchmark_algos_registries.csv")
 
 levs <- c(
   "featureless",
@@ -18,10 +31,10 @@ levs <- c(
   "cv_glmnet",
   "nearest_neighbors",
   "xgboost")
-algo.fac <- function(learner_id){
-  factor(sub(".*[.]", "", learner_id), levs)
+algo.fac <- function(algo){
+  factor(algo, levs)
 }
-score.dt[, algorithm := algo.fac(learner_id)][]
+score.dt[, algorithm := algo.fac(algorithm)][]
 Data <- function(data.name, Data){
   data.table(data.name, Data)
 }
@@ -53,9 +66,12 @@ score.dt[
 , status := ifelse(.N==10, "complete", "not")
 , by=.(algorithm,task_id)][]
 time.out <- fread(
-  "data_Classif_batchmark_algos_registries_time.csv")
+  "data_Classif_batchmark_algos_registries_time.csv"
+)[
+, algorithm := sub("classif.", "", learner_id)
+][]
 score.join <- meta.dt[
-  time.out[score.dt, on=.(task_id,learner_id,iteration)],
+  time.out[score.dt, on=.(task_id,algorithm,iteration=fold)],
   on=.(data.name=task_id)
 ][
 , minutes := seconds/60
@@ -166,6 +182,113 @@ gg <- ggplot()+
 png("data_Classif_batchmark_algos_registry_error_mean_sd.png", width=8, height=1.5, units="in", res=200)
 print(gg)
 dev.off()
+
+
+some.stats <- score.stats[Data %in% c(
+  "EMNIST",
+  ##"aztrees3",
+  "vowel","waveform","NSCH_autism")
+][
+, data := sprintf(
+  "%s\nN=%d, D=%d",
+  Data, rows, features)
+][]
+fralgo <- c(
+  xgboost="Boosting",
+  rpart="Arbre de décision",
+  nearest_neighbors="Plus proches voisins",
+  featureless="Sans caractère",
+  cv_glmnet="Modèle linéaire")
+french <- function(DT)DT[, let(
+  données = Data,
+  Algorithme = fralgo[algorithm]
+)][]
+(rank.stats <- french(some.stats)[, .(
+  rank = rank(percent.error_mean),
+  Algorithme
+), by=.(Data, data, données)])
+(rank.pval <- french(score.join)[
+  rank.stats, on=.(Data, données, Algorithme)
+][, {
+  best <- percent.error[rank==1]
+  .SD[
+    i  = rank != 1,
+    j  = with(t.test(best, percent.error, alternative="l"), data.table(
+      err.best=estimate[1],
+      err.other=estimate[2],
+      err.diff=diff(estimate),
+      p.value)),
+    by = .(rank,Algorithme=paste0(Algorithme,"-min"))]
+}, by = .(Data,data,données)])
+text.size <- 3
+rank.pval[, let(
+  text.x=err.other,
+  vjust=0.5
+)][Algorithme==paste0(fralgo[["featureless"]],"-min"), let(
+  text.x=err.best,
+  vjust=1.5
+)][]
+diff.color <- "red"
+dd <- unique(some.stats[,.(données)])
+blank.dt <- dd[data.table(
+  données="NSCH_autism",
+  x=3.2,
+  y="Boosting"), on="données"]
+gg <- ggplot()+
+  ggtitle("Résultats de prédiction de 5 algorithmes d'apprentissage, sur 4 jeux de données")+
+  theme_bw()+
+  geom_segment(aes(
+    err.best, Algorithme,
+    xend=err.other, yend=Algorithme),
+    color=diff.color,
+    data=rank.pval)+
+  geom_text(aes(
+    text.x, Algorithme,
+    vjust=vjust,
+    label=sprintf(
+      " Diff=%.1f %s",
+      err.diff, ifelse(p.value<0.0001, "p<0.0001", sprintf("p=%.4f", p.value))
+    )),
+    color=diff.color,
+    size=text.size,
+    hjust=0,
+    data=rank.pval)+
+  geom_segment(aes(
+    percent.error_mean+percent.error_sd, Algorithme,
+    xend=percent.error_mean-percent.error_sd, yend=Algorithme),
+    data=some.stats)+
+  geom_point(aes(
+    percent.error_mean,
+    Algorithme),
+    shape=1,
+    data=some.stats)+
+  geom_blank(aes(x,y),data=blank.dt)+
+  geom_text(aes(
+    percent.error_mean+ifelse(Algorithme==fralgo[["featureless"]],-1,1)*percent.error_sd,
+    Algorithme,
+    hjust=ifelse(Algorithme==fralgo[["featureless"]], 1, 0),
+    label=sprintf(
+      "%s%.1f±%.1f%s",
+      ifelse(Algorithme==fralgo[["featureless"]],""," "),
+      percent.error_mean,
+      percent.error_sd,
+      ifelse(Algorithme==fralgo[["featureless"]]," ",""))),
+    size=text.size,
+    data=some.stats)+
+  ##scale_y_discrete("Algorithme")+
+  scale_x_continuous(
+    "Taux d'erreur (%) sur l'ensemble test (moyenne ± écart type sur 10 blocs en validation croisée)")+
+  facet_wrap(
+    ~données, scales="free", labeller=label_both, nrow=2)
+  ## facet_grid(
+  ##   ##. ~ Data + rows + features,
+  ##   . ~ données,
+  ##   scales="free", labeller=label_both)
+png("data_Classif_batchmark_algos_registry_error_mean_sd_p.png", width=9, height=4.5, units="in", res=200)
+print(gg)
+dev.off()
+
+
 
 some.stats[, `:=`(
   time_mean_SD = NA_character_

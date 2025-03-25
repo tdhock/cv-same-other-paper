@@ -418,7 +418,7 @@ text.dt <- rbind(
   tlab(8, -1.9, "p<0.05"),
   tlab(-1.5, text.y, "Beneficial\nto combine"),
   tlab(1.5, text.y, "Detrimental\nto combine"))
-set.seed(2)
+set.seed(4)#IPair_E_rot not overlapping Detrimental to combine.
 gg <- ggplot()+
   ggtitle("Is it beneficial to combine subsets?")+
   theme_bw()+
@@ -469,12 +469,12 @@ png("data_Classif_batchmark_registry_scatter_all_segments.png", width=5, height=
 print(gg)
 dev.off()
 
-text.y <- -16
+text.y <- -17
 text.dt <- rbind(
   tlab(35, -0.7, "p>0.05"),
   tlab(35, -2.5, "p<0.05"),
-  tlab(-5.5, text.y, "Accurate"),
-  tlab(6, text.y, "Inaccurate"))
+  tlab(-5.5, text.y, "More\naccurate"),
+  tlab(6, text.y, "Less\naccurate"))
 set.seed(3)
 gg <- ggplot()+
   theme_bw()+
@@ -873,8 +873,72 @@ png("data_Classif_batchmark_registry_glmnet_featureless_mean_sd.png", width=7.5,
 print(gg)
 dev.off()
 
+(meta.not.tt <- meta.dt[subset_type=="ImagePair"])
+dir.create("data_Classif_figures")
+for(meta.i in 1:nrow(meta.not.tt)){
+  cat(sprintf("%4d / %4d data sets\n", meta.i, nrow(meta.not.tt)))
+  meta.row <- meta.not.tt[meta.i]
+  scores.not <- score.atomic[meta.row, on=.(task_id=data.name), nomatch=0L]
+  if(nrow(scores.not)){
+    scores.wide <- dcast(
+      scores.not,
+      algorithm + data.name + train_subsets + test_subset ~ .,
+      list(mean, sd),
+      value.var="percent.error")
+    (join.wide <- group.meta[
+      scores.wide, on=.(data.name, test_subset)
+    ][
+    , hjust := ifelse(percent.error_mean==min(percent.error_mean), 1.1, -0.1)
+    , by=.(test_subset, train_subsets)
+    ][])
+    gg <- ggplot()+
+      theme_bw()+
+      theme(
+        ##legend.position="bottom",
+        axis.text.x=element_text(angle=30, hjust=1))+
+      meta.row[, ggtitle(sprintf(
+        "Data set: %s (%s)",
+        Data,
+        sub("_","+",data.name)
+      ))]+
+      geom_point(aes(
+        percent.error_mean, train_subsets, color=algorithm),
+        shape=1,
+        data=join.wide)+
+      geom_text(aes(
+        percent.error_mean, train_subsets,
+        hjust=hjust,
+        label=sprintf(
+          "%.1f±%.1f", percent.error_mean, percent.error_sd),
+        color=algorithm),
+        data=join.wide)+
+      scale_color_manual(values=c(
+        featureless="red",
+        cv_glmnet="black"))+
+      geom_segment(aes(
+        percent.error_mean-percent.error_sd, train_subsets,
+        color=algorithm,
+        xend=percent.error_mean+percent.error_sd, yend=train_subsets),
+        data=join.wide)+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
+      scale_x_continuous(
+        "Percent error on CV test subset (mean±SD over 10 folds in CV)",
+        limits=c(-20,120),
+        breaks=seq(0,100,by=20))+
+      scale_y_discrete(
+        "Train subsets")
+    out.png <- sprintf(
+      "data_Classif_figures/%s_error_glmnet_featureless_mean_SD_zoom.png",
+      meta.row$data.name)
+    png(out.png, width=8, height=2, units="in", res=200)
+    print(gg)
+    dev.off()
+  }
+}
+
 meta.not.tt <- meta.dt[data.name=="MNIST_EMNIST_rot"]
 meta.not.tt <- meta.dt#[is.na(test)]
+dir.create("data_Classif_figures")
 for(meta.i in 1:nrow(meta.not.tt)){
   cat(sprintf("%4d / %4d data sets\n", meta.i, nrow(meta.not.tt)))
   meta.row <- meta.not.tt[meta.i]
