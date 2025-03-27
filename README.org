@@ -52,7 +52,19 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
-** 25 Mars 2025
+** 27 Mar 2025
+
+[[file:conv_images_10fold_figure.R]] makes
+
+[[file:conv_images_10fold_figures_same_other.png]] and
+
+[[file:conv_images_10fold_figure_pval.png]]
+
+which shows there is a slight improvement (all-same) for the
+convolutional neural network, when the two subsets are the two digit
+image data sets.
+
+** 25 Mar 2025
 
 [[file:conv_images_figure.R]] makes
 
