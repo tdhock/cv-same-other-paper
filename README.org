@@ -78,7 +78,9 @@ level of prediction error, even for a convolutional network (1.8% same
 versus 8.9% other when predicting MNIST for example). These data
 suggest that learning is more difficult that we may expect, even with
 a convolutional neural network which is assumed to have good
-generalization/learning.
+generalization/learning--- actually this figure is slightly misleading
+because a ReLU activation was forgotton between the last two linear
+layers--- this was fixed in the more recent figures, =conv_images_10fold_*=.
 
 ** 4 Apr 2024
 
