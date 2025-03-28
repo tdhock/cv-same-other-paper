@@ -926,7 +926,8 @@ for(meta.i in 1:nrow(meta.not.tt)){
         limits=c(-20,120),
         breaks=seq(0,100,by=20))+
       scale_y_discrete(
-        "Train subsets")
+        "Train subsets",
+        limits=c("all","same","other"))
     out.png <- sprintf(
       "data_Classif_figures/%s_error_glmnet_featureless_mean_SD_zoom.png",
       meta.row$data.name)
