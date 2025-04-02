@@ -1,8 +1,6 @@
-** 11 Nov 2024
+** Slides
 
 See [[https://github.com/tdhock/two-new-algos-sci-ml?tab=readme-ov-file#title-abstract-slides][newer slides in my two-new-algos-sci-ml repo]]!
-
-** 9 Apr 2024
 
 [[file:slides/]] contains files for making presentation slides.
 
@@ -53,6 +51,8 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
 ** 27 Mar 2025
+
+[[file:conv_images.R]] computes results then
 
 [[file:conv_images_10fold_figure.R]] makes
 
