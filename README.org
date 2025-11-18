@@ -50,6 +50,14 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
+** 18 Nov 2025
+
+[[file:data_Classif_batchmark_registry.R]] modified to create figures that compare AUC and accuracy.
+
+[[file:data_Classif_figures/AUC_accuracy/NSCH_autism.png]]
+
+[[file:data_Classif_figures/AUC_accuracy/FishSonar_river.png]]
+
 ** 27 Mar 2025
 
 [[file:conv_images.R]] computes results then

@@ -1036,7 +1036,7 @@ for(meta.i in 1:nrow(meta.not.tt)){
 (meta.binary <- meta.dt[classes==2])
 for(meta.i in 1:nrow(meta.binary)){
   meta.row <- meta.binary[meta.i]
-  scores.not <- score.dt[
+  scores.not <- score.atomic[
     meta.row, on=.(task_id=data.name), nomatch=0L
   ][
     algorithm != "featureless"
@@ -1065,22 +1065,29 @@ for(meta.i in 1:nrow(meta.binary)){
     print(gg)
     dev.off()
     scores.wide <- dcast(
-      scores.not,
+      scores.not[, let(
+        accuracy_prop = 1-classif.ce,
+        accuracy_percent = 100*(1-classif.ce),
+        AUC = classif.auc
+      )],
       data.name + train_subsets + test_subset ~ .,
-      list(mean, sd),
-      value.var="classif.auc")
+      list(
+        mean, sd, median,
+        q75=function(x)quantile(x, 0.75),
+        q25=function(x)quantile(x, 0.25)),
+      value.var=c("AUC","accuracy_prop"))
     join.wide <- group.meta[scores.wide, on=.(data.name, test_subset)]
     gg <- ggplot()+
       theme_bw()+
       theme(axis.text.x=element_text(angle=30, hjust=1))+
       ggtitle(paste("Data set:", meta.row$data.name))+
       geom_point(aes(
-        classif.auc_mean, train_subsets),
+        AUC_mean, train_subsets),
         shape=1,
         data=join.wide)+
       geom_segment(aes(
-        classif.auc_mean-classif.auc_sd, train_subsets,
-        xend=classif.auc_mean+classif.auc_sd, yend=train_subsets),
+        AUC_mean-AUC_sd, train_subsets,
+        xend=AUC_mean+AUC_sd, yend=train_subsets),
         data=join.wide)+
       facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
       scale_x_continuous(
@@ -1093,6 +1100,91 @@ for(meta.i in 1:nrow(meta.binary)){
     png(out.png, width=8, height=2, units="in", res=200)
     print(gg)
     dev.off()
+    gg <- ggplot()+
+      theme_bw()+
+      theme(axis.text.x=element_text(angle=30, hjust=1))+
+      ggtitle(paste("Data set:", meta.row$data.name))+
+      geom_point(aes(
+        AUC_mean, train_subsets),
+        shape=1,
+        data=join.wide)+
+      geom_segment(aes(
+        AUC_q25, train_subsets,
+        xend=AUC_q75, yend=train_subsets),
+        data=join.wide)+
+      facet_grid(. ~ test_subset + subset_rows, labeller=label_both, scales="free")+
+      scale_x_continuous(
+        "AUC of cv_glmnet on CV test subset (median and quartiles over 10 folds in CV)")+
+      scale_y_discrete(
+        "Train subsets")
+    out.png <- sprintf(
+      "data_Classif_figures/%s_AUC_glmnet_median_quartiles.png",
+      meta.row$data.name)
+    png(out.png, width=8, height=2, units="in", res=200)
+    print(gg)
+    dev.off()
+    n.subsets <- meta.row$n.groups
+    join.long <- melt(
+      join.wide,
+      id.vars=c("test_subset","subset_rows", "train_subsets"),
+      measure.vars=measure(
+        metric, value.name,
+        pattern="(accuracy_prop|AUC)_(mean|sd)")
+    )[, let(
+      test = paste0("\n",test_subset),
+      rows = paste0("\n",subset_rows)
+    )][, let(hjust={
+      M <- max(mean+sd)
+      m <- min(mean-sd)
+      left <- m+(M-m)*0.33
+      right <- m+(M-m)*0.67
+      fcase(
+        mean<left, 0,
+        mean>right, 1,
+        default=0.5)
+    }), by=metric][]
+    status = ifelse(
+      meta.row$data.name %in% c("NSCH_autism","spam"),
+      "similar", "different")
+    gg <- ggplot()+
+      ##theme_bw()+
+      theme(
+        ##panel.spacing=grid::unit(0,"lines"),
+        axis.text.x=element_text(angle=30, hjust=1))+
+      ggtitle(sprintf(
+        "Data set: %s (%d %s subsets)",
+        meta.row$data.name, n.subsets, status))+
+      geom_point(aes(
+        mean, train_subsets),
+        shape=1,
+        data=join.long)+
+      geom_text(aes(
+        mean, train_subsets,
+        hjust=hjust,
+        label=sprintf(
+          "%.4f±%.4f", mean,sd)),
+        size=3,
+        vjust=-0.2,
+        data=join.long)+
+      geom_segment(aes(
+        mean+sd, train_subsets,
+        xend=mean-sd, yend=train_subsets),
+        data=join.long)+
+      facet_grid(test + rows ~ metric, labeller=label_both, scales="free")+
+      scale_x_continuous(
+        "cv_glmnet performance on CV test subset (mean±SD over 10 folds in CV)")+
+      scale_y_discrete(
+        "Train subsets",
+        limits=c("all","same","other",""))+
+      geom_blank(aes(x,y),data=data.frame(x=Inf,y=""))
+    dir.create("data_Classif_figures/AUC_accuracy", showWarnings = FALSE)
+    out.png <- sprintf(
+      "data_Classif_figures/AUC_accuracy/%s.png",
+      meta.row$data.name)
+    png(out.png, width=8, height=1+0.75*n.subsets, units="in", res=200)
+    print(gg)
+    dev.off()
   }
 }
+
 system("cd /projects/genomic-ml && unpublish_data cv-same-other-paper && publish_data projects/cv-same-other-paper")
