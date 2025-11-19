@@ -1221,7 +1221,7 @@ data.mean.sd <- dcast(
 )[, Data_rank := rank(percent.error_mean_diff)][]
 text.join <- data.mean.sd[, .(Data, Data_rank)][
   text.mean.sd, on=.(Data)
-][order(Data_rank, subset_rank)]
+][order(-Data_rank, -subset_rank)]
 Dt.levs <- text.join[, paste(Data, test_subset)]
 add_Dt <- function(DT)DT[
 , Data_test_subset := factor(paste(Data, test_subset), Dt.levs)]
@@ -1230,7 +1230,7 @@ gg <- ggplot()+
     ix, Data_test_subset,
     hjust=ihjust,
     label=sprintf(
-      " %s better, diff %.2f%%, %s ",
+      " %s better, diff %.1f%%, %s ",
       ifelse(percent.error_mean_diff>0, "all", "same"),
       -percent.error_mean_diff,
       ifelse(
@@ -1240,17 +1240,23 @@ gg <- ggplot()+
     size=3,
     data=add_Dt(text.mean.sd))+
   geom_point(aes(
-    percent.error_mean, Data_test_subset, color=train_subsets),
+    percent.error_mean, Data_test_subset,
+    ##size=train_subsets,
+    color=train_subsets),
     shape=1,
     data=add_Dt(show.mean.sd))+
   geom_segment(aes(
     percent.error_mean+percent.error_sd, Data_test_subset,
+    size=train_subsets,
     xend=percent.error_mean-percent.error_sd, yend=Data_test_subset,
     color=train_subsets),
     data=show.mean.sd)+
   scale_y_discrete("Data and test subset", position="right")+
   scale_x_continuous("Prediction error on test subset (mean ± SD in 10-fold CV)")+
   theme_bw()+
+  scale_size_manual(values=c(
+    same=0.5,
+    all=1))+
   theme(legend.position=c(0.5,0.3))
 png("data_Classif_batchmark_registry_glmnet_subset_diffs.png", width=8, height=6, units="in", res=200)
 print(gg)
