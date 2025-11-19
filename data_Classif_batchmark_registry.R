@@ -1187,4 +1187,74 @@ for(meta.i in 1:nrow(meta.binary)){
   }
 }
 
+scores.mean.sd <- dcast(
+  score.atomic[algorithm!="featureless"][meta.dt, on=.(data.name)],
+  Data + train_subsets + test_subset ~ .,
+  list(
+    mean, sd, median, length,
+    q75=function(x)quantile(x, 0.75),
+    q25=function(x)quantile(x, 0.25)),
+  value.var="percent.error")
+show.compare <- "all"
+show.mean.sd <- scores.mean.sd[train_subsets%in%c("same",show.compare)]
+err.mid <- mean(range(show.mean.sd$percent.error_mean))
+text.mean.sd <- dcast(
+  show.mean.sd,
+  Data + test_subset ~ .,
+  list(mean, diff, min, max),
+  value.var='percent.error_mean'
+)[, let(
+  compare_name=show.compare,
+  hjust = ifelse(percent.error_mean_mean<err.mid, 0, 1),
+  ihjust = ifelse(percent.error_mean_mean<err.mid, 1, 0),
+  before = ifelse(percent.error_mean_mean<err.mid, " ", ""),
+  after = ifelse(percent.error_mean_mean<err.mid, "", " "),
+  x = ifelse(percent.error_mean_mean<err.mid, percent.error_mean_max, percent.error_mean_min),
+  ix = ifelse(percent.error_mean_mean<err.mid, Inf, -Inf),
+  subset_rank=rank(percent.error_mean_diff)
+)][p.each.group, on=.(Data, compare_name, test_subset), nomatch=0L]
+data.mean.sd <- dcast(
+  text.mean.sd,
+  Data ~.,
+  mean,
+  value.var=c("percent.error_mean_diff","p.value")
+)[, Data_rank := rank(percent.error_mean_diff)][]
+text.join <- data.mean.sd[, .(Data, Data_rank)][
+  text.mean.sd, on=.(Data)
+][order(Data_rank, subset_rank)]
+Dt.levs <- text.join[, paste(Data, test_subset)]
+add_Dt <- function(DT)DT[
+, Data_test_subset := factor(paste(Data, test_subset), Dt.levs)]
+gg <- ggplot()+
+  geom_text(aes(
+    ix, Data_test_subset,
+    hjust=ihjust,
+    label=sprintf(
+      " %s better, diff %.2f%%, %s ",
+      ifelse(percent.error_mean_diff>0, "all", "same"),
+      -percent.error_mean_diff,
+      ifelse(
+        p.value<0.001,
+        "p<0.001",
+        sprintf("p=%.3f",p.value)))),
+    size=3,
+    data=add_Dt(text.mean.sd))+
+  geom_point(aes(
+    percent.error_mean, Data_test_subset, color=train_subsets),
+    shape=1,
+    data=add_Dt(show.mean.sd))+
+  geom_segment(aes(
+    percent.error_mean+percent.error_sd, Data_test_subset,
+    xend=percent.error_mean-percent.error_sd, yend=Data_test_subset,
+    color=train_subsets),
+    data=show.mean.sd)+
+  scale_y_discrete("Data and test subset", position="right")+
+  scale_x_continuous("Prediction error on test subset (mean ± SD in 10-fold CV)")+
+  theme_bw()+
+  theme(legend.position=c(0.5,0.3))
+png("data_Classif_batchmark_registry_glmnet_subset_diffs.png", width=8, height=6, units="in", res=200)
+print(gg)
+dev.off()
+
 system("cd /projects/genomic-ml && unpublish_data cv-same-other-paper && publish_data projects/cv-same-other-paper")
+
