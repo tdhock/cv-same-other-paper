@@ -1189,7 +1189,7 @@ for(meta.i in 1:nrow(meta.binary)){
 
 scores.mean.sd <- dcast(
   score.atomic[algorithm!="featureless"][meta.dt, on=.(data.name)],
-  Data + train_subsets + test_subset ~ .,
+  Data + subset_type + train_subsets + test_subset ~ .,
   list(
     mean, sd, median, length,
     q75=function(x)quantile(x, 0.75),
@@ -1239,25 +1239,33 @@ gg <- ggplot()+
         sprintf("p=%.3f",p.value)))),
     size=3,
     data=add_Dt(text.mean.sd))+
-  geom_point(aes(
-    percent.error_mean, Data_test_subset,
-    ##size=train_subsets,
-    color=train_subsets),
-    shape=1,
-    data=add_Dt(show.mean.sd))+
+  scale_fill_manual(
+    "Subset type", values=type.colors)+
   geom_segment(aes(
     percent.error_mean+percent.error_sd, Data_test_subset,
     size=train_subsets,
     xend=percent.error_mean-percent.error_sd, yend=Data_test_subset,
     color=train_subsets),
     data=show.mean.sd)+
+  geom_point(aes(
+    percent.error_mean, Data_test_subset,
+    color=train_subsets),
+    size=1.3,
+    data=add_Dt(show.mean.sd))+
+  geom_point(aes(
+    percent.error_mean, Data_test_subset,
+    fill=subset_type,
+    color=train_subsets),
+    shape=21,
+    size=1,
+    data=add_Dt(show.mean.sd))+
   scale_y_discrete("Data and test subset", position="right")+
   scale_x_continuous("Prediction error on test subset (mean ± SD in 10-fold CV)")+
   theme_bw()+
   scale_size_manual(values=c(
     same=0.5,
     all=1))+
-  theme(legend.position=c(0.5,0.3))
+  theme(legend.position=c(0.5,0.75))
 png("data_Classif_batchmark_registry_glmnet_subset_diffs.png", width=8, height=6, units="in", res=200)
 print(gg)
 dev.off()
