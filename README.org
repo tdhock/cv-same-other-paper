@@ -1,3 +1,7 @@
+** Reproducibility
+
+Processed CSV data files are available in [[https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif][data_Classif on NAU rcdata server]].
+
 ** Slides
 
 See [[https://github.com/tdhock/two-new-algos-sci-ml?tab=readme-ov-file#title-abstract-slides][newer slides in my two-new-algos-sci-ml repo]]!
