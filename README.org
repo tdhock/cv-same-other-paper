@@ -2,8 +2,8 @@
 
 Processed CSV data files are available!
 
-* download each individual CSV in [[https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif][data_Classif on NAU rcdata server]].
-* download all files in a zip file [[https://doi.org/10.5281/zenodo.18273949][on zenodo]].
+- download each individual CSV in [[https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif][data_Classif on NAU rcdata server]].
+- download all files in a zip file [[https://zenodo.org/records/18273949][on zenodo]], [[https://doi.org/10.5281/zenodo.18273949][DOI]].
 
 ** Slides
 
