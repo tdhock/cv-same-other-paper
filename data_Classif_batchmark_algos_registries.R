@@ -233,7 +233,7 @@ dd <- unique(some.stats[,.(données)])
 blank.dt <- dd[data.table(
   données="NSCH_autism",
   x=3.2,
-  y="Boosting"), on="données"]
+  y="xgboost"), on="données"]
 gg <- ggplot()+
   ggtitle("Résultats de prédiction de 5 algorithmes d'apprentissage, sur 4 jeux de données")+
   theme_bw()+

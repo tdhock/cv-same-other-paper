@@ -1,9 +1,24 @@
 ** Reproducibility
 
+*** Data set files
+
 Processed CSV data files are available!
 
-- download each individual CSV in [[https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif][data_Classif on NAU rcdata server]].
+- download each individual CSV in [[https://rcdata.nau.edu/genomic-ml/cv-same-other-paper/data_Classif][data_Classif on NAU rcdata server]].
 - download all files in a zip file [[https://zenodo.org/records/18273949][on zenodo]], [[https://doi.org/10.5281/zenodo.18273949][DOI]].
+
+*** Result CSV files
+
+These were computed on the cluster.
+
+- [[file:data-meta.csv]]
+- [[file:data_Classif_batchmark_algos_registries.csv]]
+- [[file:data_Classif_batchmark_algos_registries_time.csv]]
+- [[file:conv_images_10fold_test.csv]]
+
+*** Result figures and tables
+
+- Figure 2 test error (top [[file:figure2top.png][PNG]]), train time (bottom [[file:figure2bottom.png][PNG]]), [[file:figure2.R][R code]].
 
 ** Slides
 
