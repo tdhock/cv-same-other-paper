@@ -23,6 +23,7 @@ These were computed on the cluster.
 - Figure 2 test error (top [[file:figure2top.png][PNG]]), train time (bottom [[file:figure2bottom.png][PNG]]), [[file:figure2.R][R code]].
 - Figure 3 test error on four data sets [[file:figure3.png][PNG]], [[file:figure3.R][R code]].
 - Figure 4 test accuracy and AUC for FishSonar river (top [[file:figure4-FishSonar_river.png][PNG]]), NSCH autism (bottom [[file:figure4-NSCH_autism.png][PNG]]), [[file:figure4.R][R code]].
+- Figure 5 test error when training on all or same [[file:figure5.png][PNG]], [[file:figure5.R][R code]].
 
 
 ** Slides
