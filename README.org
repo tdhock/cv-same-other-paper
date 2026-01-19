@@ -18,6 +18,7 @@ These were computed on the cluster.
 
 *** Result figures and tables
 
+- Table 1 data sets [[file:table1.tex][tex]], [[file:table1.R][R code]].
 - Figure 2 test error (top [[file:figure2top.png][PNG]]), train time (bottom [[file:figure2bottom.png][PNG]]), [[file:figure2.R][R code]].
 
 ** Slides
