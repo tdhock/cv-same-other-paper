@@ -21,6 +21,7 @@ These were computed on the cluster.
 - Table 1 data sets [[file:table1.tex][tex]], [[file:table1.R][R code]].
 - Figure 1 SOAK concept [[file:slides/drawing-cv-same-other-generic.pdf][PDF]], [[file:slides/drawing-cv-same-other-generic.svg][inkscape SVG source]].
 - Figure 2 test error (top [[file:figure2top.png][PNG]]), train time (bottom [[file:figure2bottom.png][PNG]]), [[file:figure2.R][R code]].
+- Figure 3 test error on four data sets [[file:figure3.png][PNG]], [[file:figure3.R][R code]].
 
 ** Slides
 
