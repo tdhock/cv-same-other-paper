@@ -15,7 +15,7 @@ These were computed on the cluster.
 - [[file:data_Classif_batchmark_registry.csv]] source [[file:data_Classif_batchmark.R][R code]].
 - [[file:data_Classif_batchmark_algos_registries.csv]] source [[file:data_Classif_batchmark_algos.R][R code]].
 - [[file:data_Classif_batchmark_algos_registries_time.csv]]
-- [[file:conv_images_10fold_test.csv]]
+- [[file:conv_images_10fold_test.csv]] source [[file:conv_images.R][R code]].
 
 *** Result figures and tables
 
@@ -26,6 +26,7 @@ These were computed on the cluster.
 - Figure 4 test accuracy and AUC for FishSonar river (top [[file:figure4-FishSonar_river.png][PNG]]), NSCH autism (bottom [[file:figure4-NSCH_autism.png][PNG]]), [[file:figure4.R][R code]].
 - Figure 5 test error when training on all or same [[file:figure5.png][PNG]], [[file:figure5.R][R code]].
 - [[file:figure6.png][Figure 6 PNG]] and [[file:figure7.png][Figure 7 PNG]], test error differences and P-values, [[file:figure6-7.R][R code]].
+- Figure 8 five algos same versus other test error (top [[file:figure8top.png][PNG]]), convolutional test error (bottom [[file:figure8bottom.png][PNG]]), [[file:figure8.R][R code]].
 
 ** Slides
 
