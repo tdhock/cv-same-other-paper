@@ -1,5 +1,7 @@
 ** Reproducibility
 
+This repo contains code and data for reproducing [[https://onlinelibrary.wiley.com/doi/10.1002/sam.70055][Toby Dylan Hocking, Gabrielle Thibault, Cameron Scott Bodine, Paul Nelson Arellano, Alexander F. Shenkin, Olivia Jasmine Lindly, Same/Other/All K-Fold Cross-Validation for Estimating Similarity of Patterns in Data Subsets, Statistical Analysis and Data Mining 2026]]
+
 *** Data set files
 
 Processed CSV data files are available!
