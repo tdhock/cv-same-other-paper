@@ -33,6 +33,7 @@ These were computed on the cluster.
 ** Slides
 
 See [[https://github.com/tdhock/two-new-algos-sci-ml?tab=readme-ov-file#title-abstract-slides][newer slides in my two-new-algos-sci-ml repo]]!
+And [[https://docs.google.com/presentation/d/1CsBYOMfbD5fiZoF_Eh6SjFOlifxzSEeKE2-sId2IISI][SOAKED slides]].
 
 [[file:slides/]] contains files for making presentation slides.
 
