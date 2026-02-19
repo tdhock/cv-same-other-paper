@@ -106,7 +106,7 @@ text.size <- 3.5
 algo.info <- rowwiseDT(
   algorithm=, Algorithme=, color=,
   "cv_glmnet", "linéaire", "black",
-  "featureless", "sans caractères", "red")
+  "featureless", "sans caractères", "blue")
 yinfo <- rowwiseDT(
   en=, fr=,
   "other","autre",
@@ -196,7 +196,7 @@ gg <- ggplot()+
   facet_grid(`sous-ensemble test` ~ Données, labeller=label_both, scales="free")+
   scale_y_discrete(drop=F)+
   scale_x_continuous(
-    "Taux d’erreur sur l’ensemble test (moyenne ± écart type, 10 divisions)")
+    "Pourcentage d’erreur de prédiction sur l’ensemble test (moyenne ± écart type, 10 divisions)")
 png("figure3fr.png", width=7.5, height=4.5, units="in", res=200)
 print(gg)
 dev.off()
