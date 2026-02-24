@@ -8,8 +8,10 @@ SOAK <- mlr3resampling::ResamplingSameOtherSizesCV$new()
 SOAK$param_set$values$folds <- 10
 SOAK$param_set$values$sizes <- 0
 task.list <- list()
+dir.create("data_meta", showWarnings = FALSE)
 for(task_id in "NSCH_autism"){
   data.csv <- sprintf("data_Classif/%s.csv", task_id)
+  meta.csv <- sprintf("data_meta/%s.csv", task_id)
   if(!file.exists(data.csv)){
     unzip("data_Classif.zip", data.csv)
   }
@@ -24,6 +26,11 @@ for(task_id in "NSCH_autism"){
   task.obj$col_roles$stratum <- c(subset.col, "y")
   task.obj$col_roles$feature <- setdiff(names(task.dt), task.obj$col_roles$stratum)
   task.list[[task_id]] <- task.obj
+  meta_dt <- setnames(
+    task.dt[, .(rows=.N), by=subset.col],
+    subset.col,
+    "test.subset")
+  fwrite(meta_dt, meta.csv)
 }  
 scratch.dir <- "scratch"
 dir.create(scratch.dir, showWarnings=FALSE)
