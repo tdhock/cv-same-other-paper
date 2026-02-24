@@ -52,7 +52,30 @@ if(on.cluster){
     proj.dir,
     tasks=100,
     hours=12,
-    gigabytes=3)
+    gigabytes=3)#jid 7290208 on rorqual
+  mlr3resampling::proj_results(proj.dir)
+  mlr3resampling::proj_todo(proj.dir)
+}else if(FALSE){
+  reg.dir <- file.path(scratch.dir, "registry")
+  unlink(reg.dir, recursive=TRUE)
+  (class.bench.grid <- mlr3::benchmark_grid(
+    task.list,
+    class.learner.list,
+    SOAK))
+  unlink(reg.dir, recursive=TRUE)
+  reg = batchtools::makeExperimentRegistry(
+    file.dir = reg.dir,
+    seed = 1)
+  mlr3batchmark::batchmark(
+    class.bench.grid, store_models = TRUE, reg=reg)
+  (job.table <- batchtools::getJobTable(reg=reg))
+  chunks <- data.frame(job.table, chunk=1)
+  batchtools::submitJobs(chunks, resources=list(
+    walltime = 1*60*60,#seconds
+    memory = 3000,#megabytes per cpu
+    ncpus=1,  #>1 for multicore/parallel jobs.
+    ntasks=1, #>1 for MPI jobs.
+    chunks.as.arrayjobs=TRUE), reg=reg)
 }else{
   ##started on my laptop at 21H30 on 23 Feb 2026.
   mlr3resampling::proj_compute_all(proj.dir, verbose=TRUE)
