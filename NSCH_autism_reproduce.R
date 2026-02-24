@@ -25,7 +25,6 @@ for(task_id in "NSCH_autism"){
   task.obj$col_roles$feature <- setdiff(names(task.dt), task.obj$col_roles$stratum)
   task.list[[task_id]] <- task.obj
 }  
-scratch.dir <- "/scratch/th798/cv-same-other-paper"
 scratch.dir <- "scratch"
 dir.create(scratch.dir, showWarnings=FALSE)
 
@@ -48,13 +47,13 @@ mlr3resampling::proj_grid(
 mlr3resampling::proj_test(proj.dir)
 
 if(on.cluster){
-  120*10/12 # 100 CPUS for 10 minutes each, 12 hours total
+  120*10/12 # ~100 CPUS for 10 minutes each, 12 hours total
   mlr3resampling::proj_submit(
     proj.dir,
-    tasks=50,
+    tasks=100,
     hours=12,
     gigabytes=3)
-  ##started at 21H30
 }else{
+  ##started on my laptop at 21H30 on 23 Feb 2026.
   mlr3resampling::proj_compute_all(proj.dir, verbose=TRUE)
 }
