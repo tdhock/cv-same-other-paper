@@ -92,6 +92,7 @@ if(on.cluster){
   score_dt <- mlr3resampling::score(bmr, mlr3::msrs(c("classif.auc", "classif.acc")))
   out.csv <- paste0(reg.dir, "_scores.csv")
   fwrite(score_dt[, .SD, .SDcols=is.atomic], out.csv)
+  job.table[, learner_id := sapply(algo.pars, "[[", "learner_id")]
   job.csv <- paste0(reg.dir, "_jobs.csv")
   fwrite(job.table[, .SD, .SDcols=is.atomic], job.csv)
 }else{
