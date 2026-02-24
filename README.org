@@ -37,7 +37,7 @@ These were computed on the cluster.
 
 Bonus NSCH autism results that were not included in the paper!
 
-- [[file:NSCH_autism_reproduce_timings.R][R code]] for comparing cluster computing packages, [[file:NSCH_autism_reproduce_timings.png][PNG]].
+- [[file:NSCH_autism_reproduce_timings.R][R code]] for comparing cluster computing packages [[file:NSCH_autism_reproduce_timings_rorqual.png][PNG cluster]], [[file:NSCH_autism_reproduce_timings.png][PNG+laptop]].
 - [[file:NSCH_autism_reproduce_downsample.R][R code]] for NSCH downsample analysis (SOAKED), PNGs for [[file:NSCH_autism_reproduce_downsample_2019.png][2019]] and [[file:NSCH_autism_reproduce_downsample_2020.png][2020]].
 
 ** Slides
