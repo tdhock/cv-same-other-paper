@@ -83,6 +83,17 @@ if(on.cluster){
     ncpus=1,  #>1 for multicore/parallel jobs.
     ntasks=1, #>1 for MPI jobs.
     chunks.as.arrayjobs=TRUE), reg=reg)
+  ## rorqual 7290254
+  reg <- batchtools::loadRegistry(reg.dir)
+  bmr = mlr3batchmark::reduceResultsBatchmark(
+    reg = reg, store_backends = FALSE)
+  out.RData <- paste0(reg.dir, ".RData")
+  save(bmr, file=out.RData)
+  score_dt <- mlr3resampling::score(bmr, mlr3::msrs(c("classif.auc", "classif.acc")))
+  out.csv <- paste0(reg.dir, "_scores.csv")
+  fwrite(score_dt[, .SD, .SDcols=is.atomic], out.csv)
+  job.csv <- paste0(reg.dir, "_jobs.csv")
+  fwrite(job.table[, .SD, .SDcols=is.atomic], job.csv)
 }else{
   ##started on my laptop at 21H30 on 23 Feb 2026.
   mlr3resampling::proj_compute_all(proj.dir, verbose=TRUE)
