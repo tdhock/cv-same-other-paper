@@ -15,6 +15,7 @@ These were computed on the cluster.
 
 - [[file:data-meta.csv]] source [[file:data-meta.R][R code]].
 - [[file:data_Classif_batchmark_registry.csv]] source [[file:data_Classif_batchmark.R][R code]].
+  - reproducing NSCH autism data only [[file:data_Classif_NSCH_autism.R][R code]].
 - [[file:data_Classif_batchmark_algos_registries.csv]] source [[file:data_Classif_batchmark_algos.R][R code]].
 - [[file:data_Classif_batchmark_algos_registries_time.csv]]
 - [[file:conv_images_10fold_test.csv]] source [[file:conv_images.R][R code]].
