@@ -58,7 +58,7 @@ gg <- ggplot()+
     xend=AUC_mean-AUC_sd, yend=Computation),
     data=compare_stats)+
   scale_y_discrete(
-    "Train subsets",
+    "Computation",
     drop=FALSE)+
   scale_x_continuous(
     "Area Under the Curve (AUC) for cv_glmnet predictions on test subset (mean±SD over 10 folds in CV)")+
@@ -68,6 +68,3 @@ png(
   width=8, height=4, units="in", res=200)
 print(gg)
 dev.off()
-
-
-
