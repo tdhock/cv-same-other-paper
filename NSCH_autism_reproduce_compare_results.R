@@ -9,10 +9,10 @@ compare_dt <- rbind(
   seq_dt[, .(computation="local", learner_id, train.subsets, test.subset, test.fold, n.train.groups, groups, classif.auc, classif.acc)],
   reg_dt[, .(computation="batchtools", learner_id, train.subsets, test.subset, test.fold, n.train.groups, groups, classif.auc, classif.acc)]
 )[learner_id=="classif.cv_glmnet" & groups==n.train.groups]
-ucomp <- unique(compare_dt$computation)
+ucomp <- sort(unique(compare_dt$computation))
 yfac <- function(x)factor(x, c(
   ##"",
-  unique(compare_dt$computation)))
+  ucomp))
 compare_dt[, let(
   train=train.subsets,
   test=test.subset,
