@@ -40,8 +40,9 @@ test_dt <- compare_long[, {
   with(tlist, data.table(p.value, N=.N))
 }, by=.(train, test, compare)]
 
-
 gg <- ggplot()+
+  theme_bw()+
+  theme(panel.spacing.x=grid::unit(2, "lines"))+
   test_dt[, ggtitle(sprintf("No significant differences between Computation methods\n(different random train/test splits, different random subtrain/validation splits)\nP-value range: %.2f–%.2f", min(p.value), max(p.value)))]+
   geom_point(aes(
     AUC_mean, Computation),
@@ -60,7 +61,7 @@ gg <- ggplot()+
     "Train subsets",
     drop=FALSE)+
   scale_x_continuous(
-    "cv_glmnet performance on test subset (mean±SD over 10 folds in CV)")+
+    "Area Under the Curve (AUC) for cv_glmnet predictions on test subset (mean±SD over 10 folds in CV)")+
   facet_grid(train~test, scales="free", labeller=label_both)
 png(
   "NSCH_autism_reproduce_compare_results.png",
