@@ -94,6 +94,18 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
+** 24 Feb 2026
+
+[[file:SOAKED_STL10_waveform.R]] computes downsample results [[file:SOAKED_STL10_waveform.csv]]
+
+[[file:SOAKED_STL10_waveform_figure.R]] computes figures
+
+[[file:SOAKED_STL10_waveform_figure_timing.png]]
+
+[[file:SOAKED_STL10_waveform_figure_STL10_train.png]]
+
+[[file:SOAKED_STL10_waveform_figure_waveform_train.png]]
+
 ** 18 Nov 2025
 
 [[file:data_Classif_batchmark_registry.R]] modified to create figures that compare AUC and accuracy.
