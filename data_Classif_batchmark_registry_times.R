@@ -30,6 +30,7 @@ all_dt[, .(
 
 gg <- ggplot()+
   theme_bw()+
+  ggtitle(sprintf("%d train/test splits computable in parallel")
   theme(
     legend.position=c(0.8, 0.2),
     panel.spacing=grid::unit(0, "lines"))+
