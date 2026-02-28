@@ -1,6 +1,6 @@
 library(data.table)
-work.dir <- "."
 work.dir <- "/scratch/th798/cv-same-other-paper"
+work.dir <- "."
 reg.csv <- file.path(work.dir, "data_Classif_batchmark_sizes_registry.csv")
 score.dt <- fread(reg.csv)
 
