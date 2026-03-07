@@ -40,6 +40,7 @@ Bonus NSCH autism results that were not included in the paper!
 - [[file:NSCH_autism_reproduce_timings.R][R code]] for comparing cluster computing packages [[file:NSCH_autism_reproduce_timings_rorqual.png][PNG cluster]], [[file:NSCH_autism_reproduce_timings.png][PNG+laptop]].
 - [[file:NSCH_autism_reproduce_downsample.R][R code]] for NSCH downsample analysis (SOAKED), PNGs for [[file:NSCH_autism_reproduce_downsample_2019.png][2019]] and [[file:NSCH_autism_reproduce_downsample_2020.png][2020]].
 - [[file:NSCH_autism_reproduce_compare_results.R][R code]] for comparing random seeds, no difference [[file:NSCH_autism_reproduce_compare_results.png][PNG]].
+- [[file:NSCH_autism_reproduce_compare_results_all.R][R code]] for comparing random seeds (all), no difference [[file:NSCH_autism_reproduce_compare_results_all.png][PNG]].
 
 ** Slides
 
@@ -93,6 +94,25 @@ Introductions to cluster computing on NAU monsoon:
 
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
+
+** 27 Feb 2026
+
+[[file:data_Classif_batchmark_registry_times.R]] reads
+[[file:data_Classif_batchmark_registry_times.csv]] and makes
+
+[[file:data_Classif_batchmark_registry_times.png]]
+
+** 24 Feb 2026
+
+[[file:SOAKED_STL10_waveform.R]] computes downsample results [[file:SOAKED_STL10_waveform.csv]]
+
+[[file:SOAKED_STL10_waveform_figure.R]] computes figures
+
+[[file:SOAKED_STL10_waveform_figure_timing.png]]
+
+[[file:SOAKED_STL10_waveform_figure_STL10_train.png]]
+
+[[file:SOAKED_STL10_waveform_figure_waveform_train.png]]
 
 ** 18 Nov 2025
 
