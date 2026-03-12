@@ -177,7 +177,6 @@ fwrite(pres[, .SD, .SDcols=is.atomic], file.path(proj.dir, "results_partial.csv"
 (todo <- mlr3resampling::proj_todo(proj.dir))
 gjobs <- fread(file.path(proj.dir, "grid_jobs.csv"))
 gjobs[todo]
-mlr3resampling::proj_todo(proj.dir)
 
 jid <- mlr3resampling::proj_submit(
   proj.dir,
@@ -197,3 +196,8 @@ jid <- mlr3resampling::proj_submit(
   hours=72,
   gigabytes=16)
 
+jid <- mlr3resampling::proj_submit(
+  proj.dir,
+  tasks=5,
+  hours=100,
+  gigabytes=16)
