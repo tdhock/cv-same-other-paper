@@ -288,8 +288,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="255.56859"
-     inkscape:cy="181.57492"
+     inkscape:cx="286.88332"
+     inkscape:cy="201.77797"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -988,26 +988,26 @@
          id="tspan21-3-2-4">Train</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:3.88056px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="24.695271"
        y="94.249672"
        id="text1128-8-9-52-4-1-9-7"><tspan
          sodipodi:role="line"
          x="24.695271"
          y="94.249672"
-         style="font-size:3.88056px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7">Ignored</tspan></text>
+         style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         id="tspan21-3-2-4-7">Ignored (subset=B)</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:3.88056px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="24.695269"
        y="84.062523"
        id="text1128-8-9-52-4-1-9-7-1"><tspan
          sodipodi:role="line"
          x="24.695269"
          y="84.062523"
-         style="font-size:3.88056px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7-4">Ignored</tspan></text>
+         style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         id="tspan21-3-2-4-7-4">Ignored (fold=3)</tspan></text>
     <rect
        style="fill:#ffb0ff;fill-opacity:1;stroke:none;stroke-width:0.827681;stroke-dasharray:none;stroke-opacity:1"
        id="rect17-4-2"
@@ -1182,47 +1182,47 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="87.270325"
+       x="86.85984"
        y="66.741936"
        id="text1128-8-9-52-4-1-63"><tspan
          sodipodi:role="line"
-         x="87.270325"
+         x="86.85984"
          y="66.741936"
          style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
          id="tspan21-3-2-7">Test</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="87.39521"
+       x="86.984726"
        y="58.40921"
        id="text1128-8-9-52-4-1-9-8"><tspan
          sodipodi:role="line"
-         x="87.39521"
+         x="86.984726"
          y="58.40921"
          style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
          id="tspan21-3-2-4-8">Train</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="87.31636"
+       x="86.834442"
        y="62.745964"
        id="text1128-8-9-52-4-1-9-7-2"><tspan
          sodipodi:role="line"
-         x="87.31636"
+         x="86.834442"
          y="62.745964"
          style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7-9">Ignored</tspan></text>
+         id="tspan21-3-2-4-7-9">Ignored (downsample)</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:3.88056px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="87.332237"
        y="45.97076"
        id="text1128-8-9-52-4-1-9-7-1-1"><tspan
          sodipodi:role="line"
          x="87.332237"
          y="45.97076"
-         style="font-size:3.88056px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7-4-3">Ignored</tspan></text>
+         style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         id="tspan21-3-2-4-7-4-3">Ignored (subset=A)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1408,23 +1408,23 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="97.49794"
-       y="103.50359"
+       x="97.435738"
+       y="103.57041"
        id="text1128-8-9-52-4-1-63-0"><tspan
          sodipodi:role="line"
-         x="97.49794"
-         y="103.50359"
+         x="97.435738"
+         y="103.57041"
          style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
          id="tspan21-3-2-7-1">Test</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="97.585258"
-       y="93.099518"
+       x="97.523056"
+       y="93.166336"
        id="text1128-8-9-52-4-1-9-8-6"><tspan
          sodipodi:role="line"
-         x="97.585258"
-         y="93.099518"
+         x="97.523056"
+         y="93.166336"
          style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
          id="tspan21-3-2-4-8-4">Train</tspan></text>
     <text
@@ -1441,25 +1441,36 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="97.543976"
-       y="97.903992"
+       x="97.410339"
+       y="97.97081"
        id="text1128-8-9-52-4-1-9-7-2-0"><tspan
          sodipodi:role="line"
-         x="97.543976"
-         y="97.903992"
+         x="97.410339"
+         y="97.97081"
          style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7-9-6">Ignored</tspan></text>
+         id="tspan21-3-2-4-7-9-6">Ignored (downsample)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="97.543983"
-       y="84.135574"
+       y="82.018906"
        id="text1128-8-9-52-4-1-9-7-1-1-1"><tspan
          sodipodi:role="line"
          x="97.543983"
-         y="84.135574"
+         y="82.018906"
          style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         id="tspan21-3-2-4-7-4-3-8">Ignored</tspan></text>
+         id="tspan21-3-2-4-7-4-3-8">Ignored (downsample)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="97.570297"
+       y="85.591759"
+       id="text1128-8-9-52-4-1-9-7-1-1-1-4"><tspan
+         sodipodi:role="line"
+         x="97.570297"
+         y="85.591759"
+         style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         id="tspan21-3-2-4-7-4-3-8-3">Ignored (fold=3)</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.29512841;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect293"
