@@ -199,5 +199,5 @@ jid <- mlr3resampling::proj_submit(
 jid <- mlr3resampling::proj_submit(
   proj.dir,
   tasks=5,
-  hours=100,
+  hours=80,
   gigabytes=16)
