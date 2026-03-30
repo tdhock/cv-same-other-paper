@@ -95,6 +95,14 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
+** 30 Mar 2026
+
+[[file:Phoenix_Baltimore_road_data.R]] reads
+[[file:Phoenix_Baltimore_road_data.xlsx]] and
+writes [[file:Phoenix_Baltimore_road_data.csv]] and
+
+[[file:Phoenix_Baltimore_road_data.png]]
+
 ** 27 Feb 2026
 
 [[file:data_Classif_batchmark_registry_times.R]] reads
