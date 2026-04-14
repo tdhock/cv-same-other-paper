@@ -95,6 +95,12 @@ Introductions to cluster computing on NAU monsoon:
 - [[https://tdhock.github.io/blog/2020/monsoon-batchtools/][R batchtools on monsoon]]
 - [[https://tdhock.github.io/blog/2022/python-pandas-batchtools/][Submitting python jobs on monsoon]]
 
+** 14 Apr 2026
+
+[[file:figure-SOAKED-seeds-data.R]] makes [[file:figure-SOAKED-seeds-data.csv]]
+
+[[file:figure-SOAKED-seeds.R]] makes [[file:figure-SOAKED-seeds.png]]
+
 ** 30 Mar 2026
 
 [[file:Phoenix_Baltimore_road_data.R]] reads
