@@ -18,7 +18,9 @@ for(name in c("stats","pvalues")){
 gg <- plot(plist)+
   facet_grid(Algorithme~`sous-ensemble test`, labeller=label_both)+
   scale_y_discrete("Entraînement",drop=F, labels=ent.map)+
-  scale_x_continuous("Pourcentage d’erreur de prédiction (moyenne ± écart type, 10 divisions de validation croisée)")
+  scale_x_continuous(
+    "Pourcentage d’erreur de prédiction (moyenne ± écart type, 10 divisions de validation croisée)",
+    breaks=seq(0, 100, by=10))
 png("figure8fr.png", width=7, height=8.6, units="in", res=200)
 print(gg)
 dev.off()
