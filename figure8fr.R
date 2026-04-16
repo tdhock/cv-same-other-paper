@@ -12,7 +12,7 @@ ent.map <- c(
 for(name in c("stats","pvalues")){
   plist[[name]][, let(
     Algorithme = factor(algorithm, disp.levs),
-    "sous-ensemble test"=test.subset
+    "sous-ensemble test"=sub("_rot", "", test.subset)
   )]
 }
 gg <- plot(plist)+
