@@ -52,18 +52,18 @@ And [[https://docs.google.com/presentation/d/1CsBYOMfbD5fiZoF_Eh6SjFOlifxzSEeKE2
 - [[file:slides/HOCKING-cv-same-other-slides.tex]]
 - [[file:slides/HOCKING-cv-same-other-slides.pdf]]
 
-Title: Same versus Other Cross-Validation for comparing models trained
-on different groups of data
+Title: Same/Other/All K-Fold Cross-Validation for Estimating Similarity of Patterns in Data Subsets
 
-Abstract: cross-validation is an essential algorithm in any machine
-learning analysis. Standard K-Fold cross-validation is useful for
-comparing different algorithms on a single data set. We propose a new
-variant, Same versus Other cross-validation, which can be used to
-determine the extent to which you can get accurate predictions, by
-training on some different data subset/group (person, image,
-geographic region, year, etc). We discuss applications to several
-benchmark and real-world data sets, including predicting childhood
-autism, carbon emissions, and presence of objects in images.
+Abstract: In many real-world applications of machine learning, we are interested to know if it is possible to train on the data that we have gathered so far, and obtain accurate predictions on a new test data subset that is qualitatively different in some respect (time period, geographic region, etc.). Another question is whether data subsets are similar enough so that it is beneficial to combine subsets during model training. We propose SOAK, Same/Other/All K-fold cross-validation, a new method which can be used to answer both questions. SOAK systematically compares models which are trained on different subsets of data, and then used for prediction on a fixed test subset, to estimate the similarity of learnable/predictable patterns in data subsets. We show results of using SOAK on six new real data sets (with geographic/temporal subsets, to check if predictions are accurate on new subsets), 3 image pair data sets (subsets are different image types, to check that we get smaller prediction error on similar images), and 11 benchmark data sets with predefined train/test splits (to check similarity of predefined splits).
+
+Titre : Validation croisée pour déterminer compatibilité des données pour l’apprentissage artificiel
+
+Résumé : Dans les applications d'apprentissage automatique, il est important de savoir s’il est possible d’avoir des bonnes prédictions sur un nouvel sous-ensemble de données (l’année suivante, un autre région géographique, etc.).
+Nous voulons aussi savoir si les sous-ensembles de données (des différents entreprises, pays, etc.) sont suffisamment similaires pour justifier leur combinaison lors de l'entraînement.
+Nous proposons SOAK (Same/Other/All K-fold cross-validation : validation croisée avec entraînement sur le même/les autres/tous les sous-ensembles), une nouvelle méthode permettant de répondre à ces deux questions.
+SOAK compare systématiquement des modèles entraînés sur différents sous-ensembles de données, puis utilisés pour la prédiction sur un sous-ensemble de test fixe, afin d'estimer la similarité des sous-ensembles de données pour l’apprentissage et la prédiction.
+Nous présentons les résultats de SOAK sur six nouveaux jeux de données (avec des sous-ensembles géographiques/temporels, pour vérifier si les prédictions sont bonnes sur les nouveaux sous-ensembles), trois jeux de données de paires d'images (les sous-ensembles sont de types d'images différents, pour vérifier que nous obtenons une erreur de prédiction plus faible sur des images similaires) et onze jeux de données avec des divisions d'entraînement/test prédéfinies (pour vérifier la similarité des divisions prédéfinies).
+Nous proposons un logiciel libre, mlr3resampling dans R.
 
 See also https://github.com/tdhock/two-new-algos-sci-ml for other slides that include a subset of the figures.
 
